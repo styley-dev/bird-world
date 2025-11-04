@@ -177,6 +177,15 @@
             font-size: 14px;
             opacity: 0.8;
         }
+
+        .characterFace {
+            width: 150px;
+            height: 150px;
+            margin: 15px auto;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -190,28 +199,37 @@
         <div id="characterSelect">
             <h1>Choose Your Bird</h1>
             <div class="characterOption" onclick="selectCharacter(1)">
+                <canvas class="characterFace" id="face1" width="150" height="150"></canvas>
                 <h2>Brandin 🇮🇹</h2>
                 <p>An Italian bird with intense vibes</p>
             </div>
             <div class="characterOption" onclick="selectCharacter(2)">
+                <canvas class="characterFace" id="face2" width="150" height="150"></canvas>
                 <h2>Javious Schnitzbaum 🎩✨</h2>
                 <p>A bird with a sun hat and glitter eyelashes</p>
             </div>
             <div class="characterOption" onclick="selectCharacter(3)">
+                <canvas class="characterFace" id="face3" width="150" height="150"></canvas>
                 <h2>George Bush</h2>
                 <p>Former president, current bird</p>
+            </div>
+            <div class="characterOption" onclick="selectCharacter(4)" style="border: 3px solid #ff00ff; background: rgba(255, 0, 255, 0.2);">
+                <h2 style="font-size: 28px; text-shadow: 0 0 20px #ff00ff;">⚡ TECHNO MODE ⚡</h2>
+                <p style="font-size: 16px; color: #00ffff; text-shadow: 0 0 10px #00ffff;">INTENSE VISUAL OVERLOAD</p>
             </div>
         </div>
         <div id="ui">
             <div>Score: <span id="score">0</span></div>
             <div>Area: <span id="area">Sky</span></div>
             <div>Seeds: <span id="seeds">0</span></div>
+            <div id="bossStatus" style="display: none; color: #ff0000; font-weight: bold;">BOSS APPEARED!</div>
         </div>
         <canvas id="minimap"></canvas>
         <canvas id="gameCanvas"></canvas>
         <div id="instructions">
             <div>Arrow Keys / WASD: Move | Space: Speed Boost</div>
-            <div>Explore different areas and collect seeds!</div>
+            <div id="instructionsText">Explore different areas and collect seeds!</div>
+            <div id="bossInstructions" style="display: none; color: #ff0000; font-weight: bold;">BOSS FIGHT! Press Enter to shoot!</div>
         </div>
     </div>
 
@@ -281,6 +299,115 @@
         function skipTitleScreen() {
             document.getElementById('titleScreen').style.display = 'none';
             document.getElementById('characterSelect').style.display = 'flex';
+            drawCharacterFaces();
+        }
+
+        // Draw horrible bird faces on character selection
+        function drawCharacterFaces() {
+            // Brandin - Italian bird (horrible version)
+            const face1 = document.getElementById('face1');
+            const ctx1 = face1.getContext('2d');
+            ctx1.fillStyle = '#228B22'; // Green body
+            ctx1.beginPath();
+            ctx1.arc(75, 75, 60, 0, Math.PI * 2);
+            ctx1.fill();
+            // Italian flag stripes (badly drawn)
+            ctx1.fillStyle = '#FFFFFF';
+            ctx1.fillRect(25, 60, 100, 15);
+            ctx1.fillStyle = '#CE2B37';
+            ctx1.fillRect(25, 75, 100, 15);
+            // Crooked beak
+            ctx1.fillStyle = '#FF6347';
+            ctx1.beginPath();
+            ctx1.moveTo(130, 75);
+            ctx1.lineTo(150, 60);
+            ctx1.lineTo(150, 90);
+            ctx1.closePath();
+            ctx1.fill();
+            // Uneven eyes
+            ctx1.fillStyle = '#000';
+            ctx1.beginPath();
+            ctx1.arc(55, 65, 8, 0, Math.PI * 2);
+            ctx1.fill();
+            ctx1.beginPath();
+            ctx1.arc(95, 70, 6, 0, Math.PI * 2);
+            ctx1.fill();
+
+            // Javious - Sun hat and glitter eyelashes (horrible version)
+            const face2 = document.getElementById('face2');
+            const ctx2 = face2.getContext('2d');
+            ctx2.fillStyle = '#FF69B4'; // Pink body
+            ctx2.beginPath();
+            ctx2.arc(75, 75, 65, 0, Math.PI * 2);
+            ctx2.fill();
+            // Sun hat (massive and crooked)
+            ctx2.fillStyle = '#FFD700';
+            ctx2.beginPath();
+            ctx2.arc(75, 45, 50, 0, Math.PI * 2);
+            ctx2.fill();
+            ctx2.fillStyle = '#FFF8DC';
+            ctx2.beginPath();
+            ctx2.arc(75, 45, 40, 0, Math.PI * 2);
+            ctx2.fill();
+            // Glitter eyelashes (exaggerated)
+            ctx2.strokeStyle = '#FF1493';
+            ctx2.lineWidth = 3;
+            for (let i = 0; i < 5; i++) {
+                ctx2.beginPath();
+                ctx2.moveTo(60, 70);
+                ctx2.lineTo(50 + i * 3, 55 - i * 3);
+                ctx2.stroke();
+                ctx2.beginPath();
+                ctx2.moveTo(90, 72);
+                ctx2.lineTo(100 + i * 3, 57 - i * 3);
+                ctx2.stroke();
+            }
+            // Small eyes under the hat
+            ctx2.fillStyle = '#000';
+            ctx2.beginPath();
+            ctx2.arc(60, 80, 5, 0, Math.PI * 2);
+            ctx2.fill();
+            ctx2.beginPath();
+            ctx2.arc(90, 82, 5, 0, Math.PI * 2);
+            ctx2.fill();
+            // Beak
+            ctx2.fillStyle = '#FF6347';
+            ctx2.beginPath();
+            ctx2.moveTo(110, 75);
+            ctx2.lineTo(130, 70);
+            ctx2.lineTo(130, 80);
+            ctx2.closePath();
+            ctx2.fill();
+
+            // George Bush - Presidential bird (horrible version)
+            const face3 = document.getElementById('face3');
+            const ctx3 = face3.getContext('2d');
+            ctx3.fillStyle = '#4169E1'; // Royal blue body
+            ctx3.beginPath();
+            ctx3.arc(75, 75, 60, 0, Math.PI * 2);
+            ctx3.fill();
+            // Tie (too big)
+            ctx3.fillStyle = '#FF0000';
+            ctx3.fillRect(70, 60, 10, 50);
+            // Suit collar
+            ctx3.fillStyle = '#000080';
+            ctx3.fillRect(50, 55, 50, 20);
+            // Tired eyes
+            ctx3.fillStyle = '#000';
+            ctx3.beginPath();
+            ctx3.arc(60, 70, 6, 0, Math.PI * 2);
+            ctx3.fill();
+            ctx3.beginPath();
+            ctx3.arc(90, 72, 6, 0, Math.PI * 2);
+            ctx3.fill();
+            // Small beak
+            ctx3.fillStyle = '#FF6347';
+            ctx3.beginPath();
+            ctx3.moveTo(120, 75);
+            ctx3.lineTo(135, 73);
+            ctx3.lineTo(135, 77);
+            ctx3.closePath();
+            ctx3.fill();
         }
 
         // Initialize on page load
@@ -294,11 +421,35 @@
             worldWidth: 4000,
             worldHeight: 4000,
             characterSelected: false,
-            characterType: 1 // 1=Brandin, 2=Javious, 3=George Bush
+            characterType: 1, // 1=Brandin, 2=Javious, 3=George Bush, 4=Techno Mode
+            technoMode: false,
+            bossActive: false,
+            bossSpawned: false,
+            shootCooldown: 0
         };
 
         // Speech bubbles
         const speechBubbles = [];
+        
+        // Bullets (player projectiles)
+        const bullets = [];
+        
+        // Boss object
+        const boss = {
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: 0,
+            size: 120, // GIANT bird
+            health: 50, // Very difficult to beat
+            maxHealth: 50,
+            speed: 2.5, // Fast and aggressive
+            angle: 0,
+            color: '#8B0000', // Dark red menacing
+            wingPhase: 0,
+            attackCooldown: 0,
+            lastSpeechTime: 0
+        };
 
         // Bird object (world coordinates)
         const bird = {
@@ -440,6 +591,62 @@
         }
         generateLavaParticles();
 
+        // Glitter particles for Techno Mode
+        const glitterParticles = [];
+        function generateGlitter() {
+            glitterParticles.length = 0; // Clear existing
+            for (let i = 0; i < 500; i++) { // Tons of glitter!
+                glitterParticles.push({
+                    x: Math.random() * game.worldWidth,
+                    y: Math.random() * game.worldHeight,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4,
+                    size: 2 + Math.random() * 4,
+                    color: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'][Math.floor(Math.random() * 6)],
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.2,
+                    life: 1,
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        // Boss functions
+        function spawnBoss() {
+            game.bossSpawned = true;
+            game.bossActive = true;
+            // Spawn boss far from player initially
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 600;
+            boss.x = bird.x + Math.cos(angle) * distance;
+            boss.y = bird.y + Math.sin(angle) * distance;
+            boss.health = boss.maxHealth;
+            boss.lastSpeechTime = Date.now();
+            
+            // Start metal music
+            stopMusic();
+            playMetalMusic();
+            
+            // Show boss UI
+            document.getElementById('bossStatus').style.display = 'block';
+            document.getElementById('bossInstructions').style.display = 'block';
+            
+            // Initial boss speech
+            addSpeechBubble("I'm in your walls", boss.x, boss.y - 60);
+        }
+
+        function shootBullet() {
+            // Shoot in direction bird is facing
+            bullets.push({
+                x: bird.x,
+                y: bird.y,
+                vx: Math.cos(bird.angle) * 12,
+                vy: Math.sin(bird.angle) * 12,
+                size: 6,
+                color: '#FFD700'
+            });
+        }
+
         // Input handling
         const keys = {};
         document.addEventListener('keydown', (e) => {
@@ -531,6 +738,11 @@
                         // Add speech bubble
                         const speechText = getSpeechText(bird.characterType);
                         addSpeechBubble(speechText);
+                        
+                        // Spawn boss after 10 seeds
+                        if (game.seeds >= 10 && !game.bossSpawned) {
+                            spawnBoss();
+                        }
                     }
                 }
                 seed.pulse += 0.1;
@@ -572,6 +784,112 @@
             dunes.forEach(dune => {
                 dune.phase += 0.01;
             });
+
+            // Shooting mechanics (Enter key)
+            if (keys['enter'] && game.bossActive) {
+                // Add cooldown to prevent spam
+                if (!game.shootCooldown || game.shootCooldown <= 0) {
+                    shootBullet();
+                    game.shootCooldown = 10; // 10 frames cooldown
+                }
+            }
+            if (game.shootCooldown) game.shootCooldown--;
+
+            // Update bullets
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const bullet = bullets[i];
+                bullet.x += bullet.vx;
+                bullet.y += bullet.vy;
+                
+                // Remove if out of bounds
+                if (bullet.x < 0 || bullet.x > game.worldWidth || 
+                    bullet.y < 0 || bullet.y > game.worldHeight) {
+                    bullets.splice(i, 1);
+                    continue;
+                }
+                
+                // Check collision with boss
+                if (game.bossActive && boss.health > 0) {
+                    const dx = bullet.x - boss.x;
+                    const dy = bullet.y - boss.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < boss.size * 0.8) {
+                        boss.health--;
+                        bullets.splice(i, 1);
+                        if (boss.health <= 0) {
+                            game.bossActive = false;
+                            stopMusic();
+                            startMusic(game.characterType); // Resume normal music
+                            // Hide boss UI
+                            document.getElementById('bossStatus').style.display = 'none';
+                            document.getElementById('bossInstructions').style.display = 'none';
+                        }
+                    }
+                }
+            }
+
+            // Update boss AI (aggressive chasing)
+            if (game.bossActive && boss.health > 0) {
+                // Chase player aggressively
+                const dx = bird.x - boss.x;
+                const dy = bird.y - boss.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist > 0) {
+                    boss.vx = (dx / dist) * boss.speed;
+                    boss.vy = (dy / dist) * boss.speed;
+                    boss.angle = Math.atan2(dy, dx);
+                }
+                
+                boss.x += boss.vx;
+                boss.y += boss.vy;
+                boss.wingPhase += 0.4;
+                boss.attackCooldown--;
+                
+                // Boss speech (creepy messages)
+                if (Date.now() - boss.lastSpeechTime > 3000) { // Every 3 seconds
+                    const bossMessages = [
+                        "I'm in your walls",
+                        "I'm out to get you",
+                        "You can't escape",
+                        "I see you",
+                        "Run all you want",
+                        "There's no hiding"
+                    ];
+                    const msg = bossMessages[Math.floor(Math.random() * bossMessages.length)];
+                    addSpeechBubble(msg, boss.x, boss.y - 60);
+                    boss.lastSpeechTime = Date.now();
+                }
+                
+                // Check collision with player (damage player/difficult)
+                if (dist < boss.size * 0.8 + bird.size) {
+                    // Push player away and slow them down
+                    bird.vx = -boss.vx * 2;
+                    bird.vy = -boss.vy * 2;
+                }
+            }
+
+            // Update glitter particles (Techno Mode)
+            if (game.technoMode) {
+                glitterParticles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.rotation += particle.rotationSpeed;
+                    particle.pulse += 0.2;
+                    
+                    // Wrap around edges
+                    if (particle.x < 0) particle.x = game.worldWidth;
+                    if (particle.x > game.worldWidth) particle.x = 0;
+                    if (particle.y < 0) particle.y = game.worldHeight;
+                    if (particle.y > game.worldHeight) particle.y = 0;
+                    
+                    // Random direction changes for chaos
+                    if (Math.random() < 0.02) {
+                        particle.vx = (Math.random() - 0.5) * 4;
+                        particle.vy = (Math.random() - 0.5) * 4;
+                    }
+                });
+            }
         }
 
         // Draw functions
@@ -796,6 +1114,106 @@
             ctx.restore();
         }
 
+        function drawBoss() {
+            if (!game.bossActive || boss.health <= 0) return;
+            
+            // Convert world coordinates to screen coordinates
+            const screenX = boss.x - camera.x;
+            const screenY = boss.y - camera.y;
+            
+            // Only draw if on screen
+            if (screenX < -200 || screenX > canvas.width + 200 || 
+                screenY < -200 || screenY > canvas.height + 200) return;
+            
+            ctx.save();
+            ctx.translate(screenX, screenY);
+            ctx.rotate(boss.angle);
+
+            // Body - GIANT menacing bird
+            ctx.fillStyle = boss.color;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, boss.size * 0.6, boss.size * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Dark outline for menacing look
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Wings - aggressive flapping
+            const wingAngle = Math.sin(boss.wingPhase) * 0.7;
+            ctx.fillStyle = '#660000';
+            ctx.beginPath();
+            ctx.ellipse(-boss.size * 0.3, 0, boss.size * 0.5, boss.size * 0.3, wingAngle, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(-boss.size * 0.3, 0, boss.size * 0.5, boss.size * 0.3, -wingAngle, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Giant menacing beak
+            ctx.fillStyle = '#FF0000';
+            ctx.beginPath();
+            ctx.moveTo(boss.size * 0.5, 0);
+            ctx.lineTo(boss.size * 0.9, -boss.size * 0.15);
+            ctx.lineTo(boss.size * 0.9, boss.size * 0.15);
+            ctx.closePath();
+            ctx.fill();
+
+            // Glowing red eyes
+            ctx.fillStyle = '#FF0000';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#FF0000';
+            ctx.beginPath();
+            ctx.arc(boss.size * 0.2, -boss.size * 0.1, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            ctx.restore();
+            
+            // Boss health bar
+            const healthBarWidth = 200;
+            const healthBarHeight = 20;
+            const healthPercent = boss.health / boss.maxHealth;
+            const barX = screenX - healthBarWidth / 2;
+            const barY = screenY - boss.size - 40;
+            
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(barX, barY, healthBarWidth, healthBarHeight);
+            ctx.fillStyle = healthPercent > 0.5 ? '#00ff00' : healthPercent > 0.25 ? '#ffff00' : '#ff0000';
+            ctx.fillRect(barX, barY, healthBarWidth * healthPercent, healthBarHeight);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(barX, barY, healthBarWidth, healthBarHeight);
+            
+            // Boss label
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('BOSS', screenX, barY - 15);
+        }
+
+        function drawBullets() {
+            bullets.forEach(bullet => {
+                const screenX = bullet.x - camera.x;
+                const screenY = bullet.y - camera.y;
+                
+                // Only draw if on screen
+                if (screenX > -50 && screenX < canvas.width + 50 && 
+                    screenY > -50 && screenY < canvas.height + 50) {
+                    ctx.save();
+                    ctx.fillStyle = bullet.color;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = bullet.color;
+                    ctx.beginPath();
+                    ctx.arc(screenX, screenY, bullet.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.restore();
+                }
+            });
+        }
+
         function drawAreaMarkers() {
             areas.forEach(area => {
                 const x = area.x - camera.x;
@@ -861,10 +1279,17 @@
             // Set bird colors/styles based on character
             if (type === 1) { // Brandin - Italian (green, white, red)
                 bird.color = '#228B22'; // Green
+                game.technoMode = false;
             } else if (type === 2) { // Javious - Sun hat and glitter
                 bird.color = '#FF69B4'; // Pink
-            } else { // George Bush
+                game.technoMode = false;
+            } else if (type === 3) { // George Bush
                 bird.color = '#4169E1'; // Royal blue
+                game.technoMode = false;
+            } else if (type === 4) { // Techno Mode!
+                bird.color = '#FF00FF'; // Magenta
+                game.technoMode = true;
+                generateGlitter();
             }
             
             // Hide character select screen
@@ -902,13 +1327,20 @@
             
             if (characterType === 1) {
                 // Intense music for Brandin - dark, dramatic tones
+                musicGainNode.gain.value = 0.3;
                 playIntenseMusic();
             } else if (characterType === 2) {
                 // Reggae for Javious - laid back, rhythmic
+                musicGainNode.gain.value = 0.3;
                 playReggaeMusic();
-            } else {
+            } else if (characterType === 3) {
                 // Mary Had a Little Lamb for George Bush
+                musicGainNode.gain.value = 0.3;
                 playMaryHadALittleLamb();
+            } else if (characterType === 4) {
+                // LOUD techno for Techno Mode (semi-clipping)
+                musicGainNode.gain.value = 0.9; // Very loud, almost clipping
+                playTechnoMusic();
             }
         }
 
@@ -1014,11 +1446,134 @@
             setInterval(playNote, 350);
         }
 
+        function playTechnoMusic() {
+            // Generic techno with bass and synth
+            const bassFreq = 55; // Low A
+            const synthNotes = [220, 277, 330, 392, 440, 554, 659, 784]; // Techno scale
+            
+            // Heavy bass kick
+            function playKick() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(bassFreq, audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, audioContext.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.8, audioContext.currentTime); // Very loud
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+            }
+            
+            // Synth melody
+            let synthIndex = 0;
+            function playSynth() {
+                const osc1 = audioContext.createOscillator();
+                const osc2 = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc1.type = 'sawtooth';
+                osc2.type = 'square';
+                osc1.frequency.value = synthNotes[synthIndex];
+                osc2.frequency.value = synthNotes[synthIndex] * 2;
+                gain.gain.setValueAtTime(0.7, audioContext.currentTime); // Very loud
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(musicGainNode);
+                osc1.start();
+                osc2.start();
+                osc1.stop(audioContext.currentTime + 0.15);
+                osc2.stop(audioContext.currentTime + 0.15);
+                synthIndex = (synthIndex + 1) % synthNotes.length;
+            }
+            
+            // Hi-hat
+            function playHiHat() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'square';
+                osc.frequency.value = 8000;
+                gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.05);
+            }
+            
+            setInterval(playKick, 250); // 4/4 kick
+            setInterval(playSynth, 125); // Fast synth
+            setInterval(playHiHat, 125); // Fast hi-hat
+        }
+
+        function playMetalMusic() {
+            // Intense stressful metal music
+            musicGainNode.gain.value = 0.85; // Very loud, stressful
+            
+            const powerChordFreqs = [220, 277, 330]; // Power chords
+            const metalNotes = [196, 220, 247, 262, 294, 330, 349, 392]; // Aggressive scale
+            
+            // Heavy distorted rhythm guitar
+            let rhythmIndex = 0;
+            function playRhythm() {
+                const osc1 = audioContext.createOscillator();
+                const osc2 = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc1.type = 'sawtooth';
+                osc2.type = 'square';
+                osc1.frequency.value = metalNotes[rhythmIndex];
+                osc2.frequency.value = metalNotes[rhythmIndex] * 1.5;
+                gain.gain.setValueAtTime(0.9, audioContext.currentTime); // Very loud
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(musicGainNode);
+                osc1.start();
+                osc2.start();
+                osc1.stop(audioContext.currentTime + 0.2);
+                osc2.stop(audioContext.currentTime + 0.2);
+                rhythmIndex = (rhythmIndex + 1) % metalNotes.length;
+            }
+            
+            // Aggressive bass
+            function playMetalBass() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.value = 110; // Low and aggressive
+                gain.gain.setValueAtTime(0.8, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.25);
+            }
+            
+            // Fast drum pattern
+            function playMetalDrums() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'square';
+                osc.frequency.value = 200;
+                gain.gain.setValueAtTime(0.6, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.05);
+            }
+            
+            setInterval(playRhythm, 100); // Very fast, intense
+            setInterval(playMetalBass, 150);
+            setInterval(playMetalDrums, 80);
+        }
+
         // Speech bubble system
-        function addSpeechBubble(text) {
+        function addSpeechBubble(text, x, y) {
             speechBubbles.push({
-                x: bird.x, // World coordinates
-                y: bird.y - 40, // World coordinates
+                x: x !== undefined ? x : bird.x, // World coordinates
+                y: y !== undefined ? y : bird.y - 40, // World coordinates
                 text: text,
                 life: 120, // frames (2 seconds at 60fps)
                 alpha: 1
@@ -1139,6 +1694,8 @@
             drawLavaParticles();
             drawAreaMarkers();
             drawSeeds();
+            drawBoss(); // Draw boss before bullets for layering
+            drawBullets();
             drawBird();
             drawSpeechBubbles();
             
