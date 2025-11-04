@@ -223,6 +223,53 @@
             <div>Area: <span id="area">Sky</span></div>
             <div>Seeds: <span id="seeds">0</span></div>
             <div id="bossStatus" style="display: none; color: #ff0000; font-weight: bold;">BOSS APPEARED!</div>
+            <button id="storeBtn" onclick="toggleStore()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🛒 STORE</button>
+        </div>
+        <div id="store" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 400px; border: 3px solid #FFD700;">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #FFD700;">🛒 HELPER BIRD STORE</h2>
+            <div style="margin-bottom: 15px;">
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 5px;">Brandin 🇮🇹 - 100 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Effective seed targeting, normal speed</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Owned: <span id="brandinCount">0</span></span>
+                        <button onclick="buyHelperBird(1)" id="buyBrandin" style="padding: 8px 15px; background: #228B22; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Buy (<span id="brandinCost">100</span>)</button>
+                    </div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 5px;">Javious Schnitzbaum 🎩✨ - 50 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Very fast and chaotic, completely random</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Owned: <span id="javiousCount">0</span></span>
+                        <button onclick="buyHelperBird(2)" id="buyJavious" style="padding: 8px 15px; background: #FF69B4; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Buy (<span id="javiousCost">50</span>)</button>
+                    </div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 5px;">George Bush - 75 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Sends small birds to collect seeds while sleeping</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Owned: <span id="bushCount">0</span></span>
+                        <button onclick="buyHelperBird(3)" id="buyBush" style="padding: 8px 15px; background: #4169E1; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Buy (<span id="bushCost">75</span>)</button>
+                    </div>
+                </div>
+                <div style="background: rgba(255, 215, 0, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 2px solid #FFD700;">
+                    <h3 style="margin-bottom: 5px;">⚡ Speed Boost - 150 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Permanently increase player speed</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Level: <span id="speedLevel">1</span></span>
+                        <button onclick="buySpeedBoost()" id="buySpeed" style="padding: 8px 15px; background: #FFD700; border: none; border-radius: 5px; color: black; cursor: pointer; font-weight: bold;">Buy (<span id="speedCost">150</span>)</button>
+                    </div>
+                </div>
+                <div style="background: rgba(255, 0, 255, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 2px solid #FF00FF;">
+                    <h3 style="margin-bottom: 5px;">💎 Seed Multiplier - 200 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Double seeds collected from each pickup</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Multiplier: <span id="multiplierLevel">1x</span></span>
+                        <button onclick="buySeedMultiplier()" id="buyMultiplier" style="padding: 8px 15px; background: #FF00FF; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Buy (<span id="multiplierCost">200</span>)</button>
+                    </div>
+                </div>
+            </div>
+            <button onclick="toggleStore()" style="width: 100%; padding: 10px; background: #666; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; margin-top: 10px;">Close Store</button>
         </div>
         <canvas id="minimap"></canvas>
         <canvas id="gameCanvas"></canvas>
@@ -247,7 +294,7 @@
         minimapCanvas.width = 200;
         minimapCanvas.height = 150;
 
-        // Descriptive words (Variable 1) - 50+ unique complex words
+        // Descriptive words (Variable 1) - 50+ unique complex words + physics terms
         const descriptiveWords = [
             'ethereal', 'hyperbolic', 'cosmetic', 'intrusive', 'serendipitous',
             'ephemeral', 'ubiquitous', 'voracious', 'mellifluous', 'sycophantic',
@@ -264,10 +311,16 @@
             'yearning', 'zealot', 'aesthetic', 'bucolic', 'chimerical',
             'diaphanous', 'eclectic', 'flamboyant', 'gossamer', 'halcyon',
             'iridescent', 'jubilant', 'kinetic', 'lissome', 'majestic',
-            'numinous', 'opulent', 'penultimate', 'quiescent', 'refulgent'
+            'numinous', 'opulent', 'penultimate', 'quiescent', 'refulgent',
+            'thermodynamic', 'combustive', 'centrifugal', 'electromagnetic', 'oscillatory',
+            'quantum', 'relativistic', 'inertial', 'molecular', 'atmospheric',
+            'vibrational', 'rotational', 'translational', 'gravitational', 'magnetic',
+            'nuclear', 'atomic', 'photonic', 'spectroscopic', 'hydrodynamic',
+            'aerodynamic', 'isothermal', 'adiabatic', 'entropic',
+            'exothermic', 'endothermic', 'catalytic', 'mechanical', 'elastic'
         ];
 
-        // Bird-related words (Variable 2) - 50+ unique bird terms
+        // Bird-related words (Variable 2) - 50+ unique bird terms + physics-bird terms
         const birdWords = [
             'feathers', 'flight', 'flapping', 'pecking', 'bird feet', 'tickle bones',
             'beaks', 'wings', 'talons', 'plumage', 'chirping', 'twittering',
@@ -285,7 +338,13 @@
             'landing', 'banking', 'turning', 'stooping', 'swooping',
             'skimming', 'plunge diving', 'surface diving', 'bobbing', 'paddling',
             'wading', 'stalking', 'pouncing', 'caching', 'cracking',
-            'shelling', 'probing', 'drilling', 'hammering', 'siphoning'
+            'shelling', 'probing', 'drilling', 'hammering', 'siphoning',
+            'aerodynamic feathers', 'thermal soaring', 'lift generation', 'drag reduction',
+            'centrifugal flight', 'momentum conservation', 'kinetic energy', 'potential energy',
+            'velocity vectors', 'acceleration patterns', 'rotational dynamics', 'orbital mechanics',
+            'pressure differentials', 'airflow dynamics', 'vortex shedding', 'boundary layers',
+            'thermodynamic efficiency', 'combustion energy', 'metabolic rates', 'energy conversion',
+            'force vectors', 'torque generation', 'angular momentum', 'fluid dynamics'
         ];
 
         // Initialize title screen
@@ -425,7 +484,12 @@
             technoMode: false,
             bossActive: false,
             bossSpawned: false,
-            shootCooldown: 0
+            shootCooldown: 0,
+            helperBirds: [],
+            helperBirdCounts: { 1: 0, 2: 0, 3: 0 },
+            baseCosts: { 1: 100, 2: 50, 3: 75 },
+            speedLevel: 1,
+            seedMultiplier: 1
         };
 
         // Speech bubbles
@@ -465,6 +529,125 @@
             wingPhase: 0,
             characterType: 1
         };
+
+        // Helper Bird System
+        function getHelperBirdCost(type) {
+            const count = game.helperBirdCounts[type];
+            const baseCost = game.baseCosts[type];
+            return Math.floor(baseCost * Math.pow(1.25, count));
+        }
+
+        function toggleStore() {
+            const store = document.getElementById('store');
+            if (store.style.display === 'none') {
+                store.style.display = 'block';
+                updateStoreUI();
+            } else {
+                store.style.display = 'none';
+            }
+        }
+
+        function updateStoreUI() {
+            document.getElementById('brandinCount').textContent = game.helperBirdCounts[1];
+            document.getElementById('javiousCount').textContent = game.helperBirdCounts[2];
+            document.getElementById('bushCount').textContent = game.helperBirdCounts[3];
+            
+            const brandinCost = getHelperBirdCost(1);
+            const javiousCost = getHelperBirdCost(2);
+            const bushCost = getHelperBirdCost(3);
+            
+            document.getElementById('brandinCost').textContent = brandinCost;
+            document.getElementById('javiousCost').textContent = javiousCost;
+            document.getElementById('bushCost').textContent = bushCost;
+            
+            document.getElementById('buyBrandin').disabled = game.seeds < brandinCost;
+            document.getElementById('buyJavious').disabled = game.seeds < javiousCost;
+            document.getElementById('buyBush').disabled = game.seeds < bushCost;
+            
+            document.getElementById('speedLevel').textContent = game.speedLevel;
+            document.getElementById('speedCost').textContent = 150 * game.speedLevel;
+            document.getElementById('buySpeed').disabled = game.seeds < 150 * game.speedLevel;
+            
+            document.getElementById('multiplierLevel').textContent = game.seedMultiplier + 'x';
+            document.getElementById('multiplierCost').textContent = 200 * game.seedMultiplier;
+            document.getElementById('buyMultiplier').disabled = game.seeds < 200 * game.seedMultiplier;
+        }
+
+        function buyHelperBird(type) {
+            const cost = getHelperBirdCost(type);
+            if (game.seeds >= cost) {
+                game.seeds -= cost;
+                game.helperBirdCounts[type]++;
+                
+                const helperBird = {
+                    type: type,
+                    x: bird.x + (Math.random() - 0.5) * 200,
+                    y: bird.y + (Math.random() - 0.5) * 200,
+                    vx: 0,
+                    vy: 0,
+                    size: 25,
+                    angle: Math.random() * Math.PI * 2,
+                    wingPhase: Math.random() * Math.PI * 2,
+                    targetSeed: null,
+                    lastCollectionTime: 0,
+                    sleepPhase: 0,
+                    smallBirds: []
+                };
+                
+                if (type === 1) {
+                    helperBird.color = '#228B22';
+                    helperBird.speed = 3;
+                } else if (type === 2) {
+                    helperBird.color = '#FF69B4';
+                    helperBird.speed = 5;
+                } else if (type === 3) {
+                    helperBird.color = '#4169E1';
+                    helperBird.speed = 0;
+                    for (let i = 0; i < 3; i++) {
+                        helperBird.smallBirds.push({
+                            x: helperBird.x + (Math.random() - 0.5) * 100,
+                            y: helperBird.y + (Math.random() - 0.5) * 100,
+                            vx: 0,
+                            vy: 0,
+                            size: 10,
+                            angle: Math.random() * Math.PI * 2,
+                            wingPhase: Math.random() * Math.PI * 2,
+                            targetSeed: null,
+                            color: '#4169E1',
+                            speed: 2,
+                            hasSeed: false,
+                            returning: false
+                        });
+                    }
+                }
+                
+                game.helperBirds.push(helperBird);
+                updateStoreUI();
+                document.getElementById('seeds').textContent = game.seeds;
+            }
+        }
+
+        function buySpeedBoost() {
+            const cost = 150 * game.speedLevel;
+            if (game.seeds >= cost) {
+                game.seeds -= cost;
+                game.speedLevel++;
+                bird.speed += 0.5;
+                bird.maxSpeed += 1;
+                updateStoreUI();
+                document.getElementById('seeds').textContent = game.seeds;
+            }
+        }
+
+        function buySeedMultiplier() {
+            const cost = 200 * game.seedMultiplier;
+            if (game.seeds >= cost) {
+                game.seeds -= cost;
+                game.seedMultiplier *= 2;
+                updateStoreUI();
+                document.getElementById('seeds').textContent = game.seeds;
+            }
+        }
 
         // Audio context for music
         let audioContext = null;
@@ -733,8 +916,8 @@
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < bird.size + seed.size) {
                         seed.collected = true;
-                        game.seeds++;
-                        game.score += 10;
+                        game.seeds += game.seedMultiplier;
+                        game.score += 10 * game.seedMultiplier;
                         // Add speech bubble
                         const speechText = getSpeechText(bird.characterType);
                         addSpeechBubble(speechText);
