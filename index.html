@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bird World - Explore the Skies</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        #gameContainer {
+            position: relative;
+            border: 4px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: #87CEEB;
+        }
+
+        canvas {
+            display: block;
+            background: linear-gradient(to bottom, #87CEEB 0%, #98D8C8 100%);
+        }
+
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 16px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        #minimap {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 200px;
+            height: 150px;
+            border: 2px solid white;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        #instructions {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 14px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        #titleScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            color: white;
+            cursor: pointer;
+        }
+
+        #titleScreen h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        #titleScreen h2 {
+            font-size: 28px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            opacity: 0.9;
+        }
+
+        #titleScreen h3 {
+            font-size: 24px;
+            margin-top: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-style: italic;
+            color: #FFD700;
+        }
+
+        #titleScreen .clickPrompt {
+            font-size: 18px;
+            margin-top: 60px;
+            opacity: 0.7;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.3; }
+        }
+
+        #characterSelect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+        }
+
+        #characterSelect h1 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .characterOption {
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .characterOption:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
+
+        .characterOption h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .characterOption p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="titleScreen" onclick="skipTitleScreen()">
+            <h1>Bird World</h1>
+            <h2>A fully explorable bird world</h2>
+            <h3 id="tagline">Now with <span id="variable1"></span> <span id="variable2"></span></h3>
+            <div class="clickPrompt">Click to continue</div>
+        </div>
+        <div id="characterSelect">
+            <h1>Choose Your Bird</h1>
+            <div class="characterOption" onclick="selectCharacter(1)">
+                <h2>Brandin 🇮🇹</h2>
+                <p>An Italian bird with intense vibes</p>
+            </div>
+            <div class="characterOption" onclick="selectCharacter(2)">
+                <h2>Javious Schnitzbaum 🎩✨</h2>
+                <p>A bird with a sun hat and glitter eyelashes</p>
+            </div>
+            <div class="characterOption" onclick="selectCharacter(3)">
+                <h2>George Bush</h2>
+                <p>Former president, current bird</p>
+            </div>
+        </div>
+        <div id="ui">
+            <div>Score: <span id="score">0</span></div>
+            <div>Area: <span id="area">Sky</span></div>
+            <div>Seeds: <span id="seeds">0</span></div>
+        </div>
+        <canvas id="minimap"></canvas>
+        <canvas id="gameCanvas"></canvas>
+        <div id="instructions">
+            <div>Arrow Keys / WASD: Move | Space: Speed Boost</div>
+            <div>Explore different areas and collect seeds!</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const minimapCanvas = document.getElementById('minimap');
+        const minimapCtx = minimapCanvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = 1200;
+        canvas.height = 800;
+        
+        // Set minimap size
+        minimapCanvas.width = 200;
+        minimapCanvas.height = 150;
+
+        // Descriptive words (Variable 1) - 50+ unique complex words
+        const descriptiveWords = [
+            'ethereal', 'hyperbolic', 'cosmetic', 'intrusive', 'serendipitous',
+            'ephemeral', 'ubiquitous', 'voracious', 'mellifluous', 'sycophantic',
+            'pernicious', 'taciturn', 'voluminous', 'pervasive', 'languid',
+            'ebullient', 'capricious', 'dilapidated', 'effervescent', 'gregarious',
+            'impervious', 'jocular', 'laconic', 'magnanimous', 'nefarious',
+            'ostentatious', 'perspicacious', 'querulous', 'rambunctious', 'sagacious',
+            'tenacious', 'vociferous', 'wistful', 'xenophobic', 'youthful',
+            'zealous', 'amorphous', 'benevolent', 'cacophonous', 'diligent',
+            'effulgent', 'fastidious', 'garrulous', 'harmonious', 'illustrious',
+            'judicious', 'kaleidoscopic', 'luminous', 'meticulous', 'nonchalant',
+            'omnipotent', 'palpable', 'quintessential', 'resilient', 'sublime',
+            'tranquil', 'unassuming', 'vivacious', 'wondrous', 'xylophonic',
+            'yearning', 'zealot', 'aesthetic', 'bucolic', 'chimerical',
+            'diaphanous', 'eclectic', 'flamboyant', 'gossamer', 'halcyon',
+            'iridescent', 'jubilant', 'kinetic', 'lissome', 'majestic',
+            'numinous', 'opulent', 'penultimate', 'quiescent', 'refulgent'
+        ];
+
+        // Bird-related words (Variable 2) - 50+ unique bird terms
+        const birdWords = [
+            'feathers', 'flight', 'flapping', 'pecking', 'bird feet', 'tickle bones',
+            'beaks', 'wings', 'talons', 'plumage', 'chirping', 'twittering',
+            'nesting', 'preening', 'soaring', 'gliding', 'diving', 'hovering',
+            'roosting', 'perching', 'scavenging', 'foraging', 'migrating', 'mating',
+            'courtship', 'hatching', 'fledging', 'molting', 'beak tapping', 'wing spreading',
+            'tail fanning', 'head bobbing', 'chest puffing', 'crown raising', 'dance moves',
+            'song patterns', 'call notes', 'territorial displays', 'dust bathing', 'sunbathing',
+            'anting', 'bathing', 'preening rituals', 'bill clapping', 'wing fluttering',
+            'tail wagging', 'head tilting', 'eye blinking', 'neck stretching', 'leg lifting',
+            'toe wiggling', 'claw flexing', 'bill gaping', 'crop distending', 'gular fluttering',
+            'panting', 'shivering', 'piloerection', 'wattles', 'combs',
+            'spurs', 'rump feathers', 'wing bars', 'eye rings', 'nape patches',
+            'throat patches', 'breast bands', 'tail spots', 'wing beats', 'takeoff',
+            'landing', 'banking', 'turning', 'stooping', 'swooping',
+            'skimming', 'plunge diving', 'surface diving', 'bobbing', 'paddling',
+            'wading', 'stalking', 'pouncing', 'caching', 'cracking',
+            'shelling', 'probing', 'drilling', 'hammering', 'siphoning'
+        ];
+
+        // Initialize title screen
+        function initTitleScreen() {
+            const var1 = descriptiveWords[Math.floor(Math.random() * descriptiveWords.length)];
+            const var2 = birdWords[Math.floor(Math.random() * birdWords.length)];
+            document.getElementById('variable1').textContent = var1;
+            document.getElementById('variable2').textContent = var2;
+        }
+
+        function skipTitleScreen() {
+            document.getElementById('titleScreen').style.display = 'none';
+            document.getElementById('characterSelect').style.display = 'flex';
+        }
+
+        // Initialize on page load
+        initTitleScreen();
+        
+        // Game state
+        const game = {
+            score: 0,
+            seeds: 0,
+            currentArea: 'Sky',
+            worldWidth: 4000,
+            worldHeight: 4000,
+            characterSelected: false,
+            characterType: 1 // 1=Brandin, 2=Javious, 3=George Bush
+        };
+
+        // Speech bubbles
+        const speechBubbles = [];
+
+        // Bird object (world coordinates)
+        const bird = {
+            x: game.worldWidth / 2,
+            y: game.worldHeight / 2,
+            vx: 0,
+            vy: 0,
+            speed: 3,
+            maxSpeed: 8,
+            size: 30,
+            angle: 0,
+            color: '#FFD700',
+            wingPhase: 0,
+            characterType: 1
+        };
+
+        // Audio context for music
+        let audioContext = null;
+        let musicGainNode = null;
+        let musicOscillators = [];
+
+        // Camera
+        const camera = {
+            x: bird.x - canvas.width / 2,
+            y: bird.y - canvas.height / 2
+        };
+
+        // Areas/biomes
+        const areas = [
+            { name: 'Sky', x: 0, y: 0, color: '#87CEEB', clouds: true },
+            { name: 'Forest', x: 1000, y: 500, color: '#228B22', trees: true },
+            { name: 'Mountain', x: 2000, y: 0, color: '#8B7355', peaks: true },
+            { name: 'Ocean', x: 500, y: 2000, color: '#1E90FF', waves: true },
+            { name: 'Desert', x: 3000, y: 1500, color: '#EDC9AF', dunes: true },
+            { name: 'Volcano', x: 3500, y: 500, color: '#8B0000', lava: true }
+        ];
+
+        // Seeds (collectibles)
+        const seeds = [];
+        function generateSeeds() {
+            for (let i = 0; i < 100; i++) {
+                seeds.push({
+                    x: Math.random() * game.worldWidth,
+                    y: Math.random() * game.worldHeight,
+                    collected: false,
+                    size: 8,
+                    color: '#8B4513',
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+        }
+        generateSeeds();
+
+        // Clouds
+        const clouds = [];
+        function generateClouds() {
+            for (let i = 0; i < 50; i++) {
+                clouds.push({
+                    x: Math.random() * game.worldWidth,
+                    y: Math.random() * game.worldHeight * 0.6,
+                    size: 40 + Math.random() * 60,
+                    speed: 0.2 + Math.random() * 0.3
+                });
+            }
+        }
+        generateClouds();
+
+        // Trees
+        const trees = [];
+        function generateTrees() {
+            for (let i = 0; i < 30; i++) {
+                trees.push({
+                    x: 1000 + Math.random() * 800,
+                    y: 500 + Math.random() * 800,
+                    size: 30 + Math.random() * 40,
+                    color: '#654321'
+                });
+            }
+        }
+        generateTrees();
+
+        // Mountains
+        const mountainPeaks = [];
+        function generateMountains() {
+            for (let i = 0; i < 15; i++) {
+                mountainPeaks.push({
+                    x: 2000 + Math.random() * 1000,
+                    y: 0 + Math.random() * 600,
+                    size: 80 + Math.random() * 100,
+                    snow: Math.random() > 0.5
+                });
+            }
+        }
+        generateMountains();
+
+        // Ocean waves
+        const waves = [];
+        function generateWaves() {
+            for (let i = 0; i < 20; i++) {
+                waves.push({
+                    x: 500 + Math.random() * 800,
+                    y: 2000 + Math.random() * 800,
+                    phase: Math.random() * Math.PI * 2,
+                    speed: 0.05 + Math.random() * 0.05,
+                    amplitude: 10 + Math.random() * 20
+                });
+            }
+        }
+        generateWaves();
+
+        // Desert dunes
+        const dunes = [];
+        function generateDunes() {
+            for (let i = 0; i < 25; i++) {
+                dunes.push({
+                    x: 3000 + Math.random() * 800,
+                    y: 1500 + Math.random() * 800,
+                    size: 60 + Math.random() * 80,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+        }
+        generateDunes();
+
+        // Volcano particles
+        const lavaParticles = [];
+        function generateLavaParticles() {
+            for (let i = 0; i < 30; i++) {
+                lavaParticles.push({
+                    x: 3500 + (Math.random() - 0.5) * 100,
+                    y: 500 + Math.random() * 50,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: -Math.random() * 3 - 1,
+                    life: Math.random(),
+                    maxLife: 1,
+                    size: 3 + Math.random() * 5
+                });
+            }
+        }
+        generateLavaParticles();
+
+        // Input handling
+        const keys = {};
+        document.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+        });
+        document.addEventListener('keyup', (e) => {
+            keys[e.key.toLowerCase()] = false;
+        });
+
+        // Determine current area
+        function getCurrentArea() {
+            for (const area of areas) {
+                const dx = bird.x - area.x;
+                const dy = bird.y - area.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 500) {
+                    return area;
+                }
+            }
+            return areas[0]; // Default to Sky
+        }
+
+        // Update game
+        function update() {
+            // Handle input
+            const boost = keys[' '] ? 1.5 : 1;
+            let accelX = 0;
+            let accelY = 0;
+
+            if (keys['arrowleft'] || keys['a']) accelX = -1;
+            if (keys['arrowright'] || keys['d']) accelX = 1;
+            if (keys['arrowup'] || keys['w']) accelY = -1;
+            if (keys['arrowdown'] || keys['s']) accelY = 1;
+
+            // Normalize diagonal movement
+            if (accelX !== 0 && accelY !== 0) {
+                accelX *= 0.707;
+                accelY *= 0.707;
+            }
+
+            // Apply acceleration
+            bird.vx += accelX * 0.3 * boost;
+            bird.vy += accelY * 0.3 * boost;
+
+            // Apply friction
+            bird.vx *= 0.92;
+            bird.vy *= 0.92;
+
+            // Limit speed
+            const speed = Math.sqrt(bird.vx * bird.vx + bird.vy * bird.vy);
+            if (speed > bird.maxSpeed * boost) {
+                bird.vx = (bird.vx / speed) * bird.maxSpeed * boost;
+                bird.vy = (bird.vy / speed) * bird.maxSpeed * boost;
+            }
+
+            // Update bird position (world coordinates)
+            bird.x += bird.vx;
+            bird.y += bird.vy;
+
+            // Keep bird in world bounds
+            bird.x = Math.max(bird.size, Math.min(game.worldWidth - bird.size, bird.x));
+            bird.y = Math.max(bird.size, Math.min(game.worldHeight - bird.size, bird.y));
+
+            // Update angle based on velocity
+            if (speed > 0.1) {
+                bird.angle = Math.atan2(bird.vy, bird.vx);
+            }
+
+            // Update camera to follow bird
+            const targetX = bird.x - canvas.width / 2;
+            const targetY = bird.y - canvas.height / 2;
+            camera.x += (targetX - camera.x) * 0.1;
+            camera.y += (targetY - camera.y) * 0.1;
+
+            // Keep camera in world bounds
+            camera.x = Math.max(0, Math.min(game.worldWidth - canvas.width, camera.x));
+            camera.y = Math.max(0, Math.min(game.worldHeight - canvas.height, camera.y));
+
+            // Check seed collection (bird is in world coordinates)
+            seeds.forEach(seed => {
+                if (!seed.collected) {
+                    const dx = seed.x - bird.x;
+                    const dy = seed.y - bird.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < bird.size + seed.size) {
+                        seed.collected = true;
+                        game.seeds++;
+                        game.score += 10;
+                        // Add speech bubble
+                        const speechText = getSpeechText(bird.characterType);
+                        addSpeechBubble(speechText);
+                    }
+                }
+                seed.pulse += 0.1;
+            });
+
+            // Update current area
+            const currentArea = getCurrentArea();
+            game.currentArea = currentArea.name;
+
+            // Update UI
+            document.getElementById('score').textContent = game.score;
+            document.getElementById('seeds').textContent = game.seeds;
+            document.getElementById('area').textContent = game.currentArea;
+
+            // Wing animation
+            bird.wingPhase += 0.3;
+
+            // Update lava particles
+            lavaParticles.forEach(particle => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.vy += 0.1; // gravity
+                particle.life -= 0.02;
+                if (particle.life <= 0) {
+                    particle.life = particle.maxLife;
+                    particle.x = 3500 + (Math.random() - 0.5) * 100;
+                    particle.y = 500 + Math.random() * 50;
+                    particle.vx = (Math.random() - 0.5) * 2;
+                    particle.vy = -Math.random() * 3 - 1;
+                }
+            });
+
+            // Update waves
+            waves.forEach(wave => {
+                wave.phase += wave.speed;
+            });
+
+            // Update dunes
+            dunes.forEach(dune => {
+                dune.phase += 0.01;
+            });
+        }
+
+        // Draw functions
+        function drawBackground() {
+            // Create smooth gradient background blending area colors
+            const gradient = ctx.createLinearGradient(-camera.x, -camera.y, -camera.x + canvas.width, -camera.y + canvas.height);
+            
+            // Use current area color as base
+            const currentArea = getCurrentArea();
+            ctx.fillStyle = currentArea.color;
+            ctx.fillRect(-camera.x, -camera.y, game.worldWidth, game.worldHeight);
+            
+            // Add subtle area markers with gradients
+            areas.forEach(area => {
+                const x = area.x - camera.x;
+                const y = area.y - camera.y;
+                if (x > -600 && x < canvas.width + 600 && y > -600 && y < canvas.height + 600) {
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 500);
+                    gradient.addColorStop(0, area.color + '80');
+                    gradient.addColorStop(1, 'transparent');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(x - 500, y - 500, 1000, 1000);
+                }
+            });
+        }
+
+        function drawClouds() {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            clouds.forEach(cloud => {
+                const x = cloud.x - camera.x;
+                const y = cloud.y - camera.y;
+                if (x > -100 && x < canvas.width + 100 && y > -100 && y < canvas.height + 100) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, cloud.size, 0, Math.PI * 2);
+                    ctx.arc(x + cloud.size * 0.6, y, cloud.size * 0.8, 0, Math.PI * 2);
+                    ctx.arc(x + cloud.size * 1.2, y, cloud.size * 0.9, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                cloud.x += cloud.speed;
+                if (cloud.x > game.worldWidth + 100) cloud.x = -100;
+            });
+        }
+
+        function drawTrees() {
+            trees.forEach(tree => {
+                const x = tree.x - camera.x;
+                const y = tree.y - camera.y;
+                if (x > -50 && x < canvas.width + 50 && y > -100 && y < canvas.height + 100) {
+                    // Trunk
+                    ctx.fillStyle = tree.color;
+                    ctx.fillRect(x - 5, y, 10, tree.size * 0.6);
+                    // Leaves
+                    ctx.fillStyle = '#228B22';
+                    ctx.beginPath();
+                    ctx.arc(x, y, tree.size * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+
+        function drawMountains() {
+            mountainPeaks.forEach(peak => {
+                const x = peak.x - camera.x;
+                const y = peak.y - camera.y;
+                if (x > -200 && x < canvas.width + 200 && y > -200 && y < canvas.height + 200) {
+                    ctx.fillStyle = peak.snow ? '#F5F5F5' : '#696969';
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + peak.size);
+                    ctx.lineTo(x + peak.size * 0.5, y);
+                    ctx.lineTo(x + peak.size, y + peak.size);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            });
+        }
+
+        function drawWaves() {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = 3;
+            waves.forEach(wave => {
+                const x = wave.x - camera.x;
+                const y = wave.y - camera.y;
+                if (x > -100 && x < canvas.width + 100 && y > -100 && y < canvas.height + 100) {
+                    ctx.beginPath();
+                    for (let i = 0; i < 200; i++) {
+                        const px = x + i - 100;
+                        const py = y + Math.sin((i / 20) + wave.phase) * wave.amplitude;
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.stroke();
+                }
+            });
+        }
+
+        function drawDunes() {
+            dunes.forEach(dune => {
+                const x = dune.x - camera.x;
+                const y = dune.y - camera.y;
+                if (x > -150 && x < canvas.width + 150 && y > -100 && y < canvas.height + 100) {
+                    ctx.fillStyle = '#D2B48C';
+                    ctx.beginPath();
+                    ctx.arc(x, y, dune.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#C19A6B';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(x, y, dune.size * 0.8, 0, Math.PI);
+                    ctx.stroke();
+                }
+            });
+        }
+
+        function drawLavaParticles() {
+            lavaParticles.forEach(particle => {
+                const x = particle.x - camera.x;
+                const y = particle.y - camera.y;
+                if (x > -50 && x < canvas.width + 50 && y > -50 && y < canvas.height + 50) {
+                    const alpha = particle.life / particle.maxLife;
+                    ctx.fillStyle = `rgba(255, ${100 + Math.floor(alpha * 155)}, 0, ${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, particle.size * alpha, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+
+        function drawSeeds() {
+            seeds.forEach(seed => {
+                if (!seed.collected) {
+                    const x = seed.x - camera.x;
+                    const y = seed.y - camera.y;
+                    if (x > -20 && x < canvas.width + 20 && y > -20 && y < canvas.height + 20) {
+                        const pulseSize = seed.size + Math.sin(seed.pulse) * 2;
+                        ctx.fillStyle = seed.color;
+                        ctx.beginPath();
+                        ctx.arc(x, y, pulseSize, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = '#FFD700';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            });
+        }
+
+        function drawBird() {
+            // Convert world coordinates to screen coordinates
+            const screenX = bird.x - camera.x;
+            const screenY = bird.y - camera.y;
+            
+            ctx.save();
+            ctx.translate(screenX, screenY);
+            ctx.rotate(bird.angle);
+
+            // Body
+            ctx.fillStyle = bird.color;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, bird.size * 0.6, bird.size * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Character-specific features
+            if (bird.characterType === 1) {
+                // Brandin - Italian bird (green, white, red stripes or flag colors)
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(-bird.size * 0.6, -bird.size * 0.15, bird.size * 0.4, bird.size * 0.3);
+                ctx.fillStyle = '#CE2B37';
+                ctx.fillRect(-bird.size * 0.2, -bird.size * 0.15, bird.size * 0.4, bird.size * 0.3);
+            } else if (bird.characterType === 2) {
+                // Javious - Sun hat and glitter eyelashes
+                // Sun hat
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(0, -bird.size * 0.5, bird.size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#FFF8DC';
+                ctx.beginPath();
+                ctx.arc(0, -bird.size * 0.5, bird.size * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+                // Glitter eyelashes
+                ctx.strokeStyle = '#FF1493';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < 3; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(bird.size * 0.3, -bird.size * 0.1);
+                    ctx.lineTo(bird.size * 0.35 + i * 2, -bird.size * 0.15 - i * 2);
+                    ctx.stroke();
+                }
+            } else {
+                // George Bush - Presidential bird (maybe a tie or suit)
+                ctx.fillStyle = '#FF0000';
+                ctx.fillRect(0, bird.size * 0.2, bird.size * 0.3, bird.size * 0.4);
+                ctx.fillStyle = '#000080';
+                ctx.fillRect(0, bird.size * 0.1, bird.size * 0.6, bird.size * 0.15);
+            }
+
+            // Wings
+            const wingAngle = Math.sin(bird.wingPhase) * 0.5;
+            ctx.fillStyle = '#FFA500';
+            ctx.beginPath();
+            ctx.ellipse(-bird.size * 0.3, 0, bird.size * 0.5, bird.size * 0.3, wingAngle, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(-bird.size * 0.3, 0, bird.size * 0.5, bird.size * 0.3, -wingAngle, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Beak
+            ctx.fillStyle = '#FF6347';
+            ctx.beginPath();
+            ctx.moveTo(bird.size * 0.5, 0);
+            ctx.lineTo(bird.size * 0.8, -bird.size * 0.1);
+            ctx.lineTo(bird.size * 0.8, bird.size * 0.1);
+            ctx.closePath();
+            ctx.fill();
+
+            // Eye
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(bird.size * 0.2, -bird.size * 0.1, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawAreaMarkers() {
+            areas.forEach(area => {
+                const x = area.x - camera.x;
+                const y = area.y - camera.y;
+                if (x > -100 && x < canvas.width + 100 && y > -100 && y < canvas.height + 100) {
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash([10, 10]);
+                    ctx.strokeRect(x - 250, y - 250, 500, 500);
+                    ctx.setLineDash([]);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.font = '20px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(area.name, x, y - 270);
+                }
+            });
+        }
+
+        function drawMinimap() {
+            // Clear minimap
+            minimapCtx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            minimapCtx.fillRect(0, 0, minimapCanvas.width, minimapCanvas.height);
+            
+            // Scale factor
+            const scaleX = minimapCanvas.width / game.worldWidth;
+            const scaleY = minimapCanvas.height / game.worldHeight;
+            
+            // Draw areas
+            areas.forEach(area => {
+                const x = area.x * scaleX;
+                const y = area.y * scaleY;
+                minimapCtx.fillStyle = area.color + '80';
+                minimapCtx.fillRect(x - 10, y - 10, 20, 20);
+                minimapCtx.fillStyle = 'white';
+                minimapCtx.font = '8px Arial';
+                minimapCtx.textAlign = 'center';
+                minimapCtx.fillText(area.name.substring(0, 4), x, y - 12);
+            });
+            
+            // Draw camera viewport
+            minimapCtx.strokeStyle = 'yellow';
+            minimapCtx.lineWidth = 2;
+            minimapCtx.strokeRect(
+                camera.x * scaleX,
+                camera.y * scaleY,
+                canvas.width * scaleX,
+                canvas.height * scaleY
+            );
+            
+            // Draw bird position
+            minimapCtx.fillStyle = '#FFD700';
+            minimapCtx.beginPath();
+            minimapCtx.arc(bird.x * scaleX, bird.y * scaleY, 3, 0, Math.PI * 2);
+            minimapCtx.fill();
+        }
+
+        // Character selection
+        function selectCharacter(type) {
+            game.characterSelected = true;
+            game.characterType = type;
+            bird.characterType = type;
+            
+            // Set bird colors/styles based on character
+            if (type === 1) { // Brandin - Italian (green, white, red)
+                bird.color = '#228B22'; // Green
+            } else if (type === 2) { // Javious - Sun hat and glitter
+                bird.color = '#FF69B4'; // Pink
+            } else { // George Bush
+                bird.color = '#4169E1'; // Royal blue
+            }
+            
+            // Hide character select screen
+            document.getElementById('characterSelect').style.display = 'none';
+            
+            // Start music
+            startMusic(type);
+            
+            // Start game loop
+            gameLoop();
+        }
+
+        // Music generation functions
+        function initAudio() {
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    musicGainNode = audioContext.createGain();
+                    musicGainNode.gain.value = 0.3;
+                    musicGainNode.connect(audioContext.destination);
+                } catch(e) {
+                    console.log('Audio not supported');
+                }
+            } else if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        function startMusic(characterType) {
+            initAudio();
+            stopMusic();
+            
+            if (characterType === 1) {
+                // Intense music for Brandin - dark, dramatic tones
+                playIntenseMusic();
+            } else if (characterType === 2) {
+                // Reggae for Javious - laid back, rhythmic
+                playReggaeMusic();
+            } else {
+                // Mary Had a Little Lamb for George Bush
+                playMaryHadALittleLamb();
+            }
+        }
+
+        function stopMusic() {
+            musicOscillators.forEach(osc => {
+                try { osc.stop(); } catch(e) {}
+            });
+            musicOscillators = [];
+        }
+
+        function playIntenseMusic() {
+            const notes = [220, 247, 262, 294, 311, 349, 392, 440]; // Minor scale
+            let noteIndex = 0;
+            
+            function playNote() {
+                const osc1 = audioContext.createOscillator();
+                const osc2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                osc1.type = 'sawtooth';
+                osc2.type = 'triangle';
+                osc1.frequency.value = notes[noteIndex];
+                osc2.frequency.value = notes[noteIndex] * 0.5;
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(musicGainNode);
+                
+                osc1.start();
+                osc2.start();
+                osc1.stop(audioContext.currentTime + 0.3);
+                osc2.stop(audioContext.currentTime + 0.3);
+                
+                noteIndex = (noteIndex + 1) % notes.length;
+            }
+            
+            setInterval(playNote, 150);
+        }
+
+        function playReggaeMusic() {
+            const bassFreq = 110; // A2
+            const melody = [330, 392, 440, 523, 587, 659]; // Upbeat scale
+            
+            // Bass line
+            function playBass() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = bassFreq;
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.4);
+            }
+            
+            // Melody
+            let melIndex = 0;
+            function playMelody() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'square';
+                osc.frequency.value = melody[melIndex];
+                gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.2);
+                melIndex = (melIndex + 1) % melody.length;
+            }
+            
+            setInterval(playBass, 400);
+            setInterval(playMelody, 300);
+        }
+
+        function playMaryHadALittleLamb() {
+            // Notes: E D C D E E E, D D D, E G G, E D C D E E E E D D E D C
+            const notes = [659.25, 587.33, 523.25, 587.33, 659.25, 659.25, 659.25,
+                           587.33, 587.33, 587.33, 659.25, 783.99, 783.99,
+                           659.25, 587.33, 523.25, 587.33, 659.25, 659.25, 659.25, 659.25, 587.33, 587.33, 659.25, 587.33, 523.25];
+            let noteIndex = 0;
+            
+            function playNote() {
+                if (noteIndex >= notes.length) noteIndex = 0;
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = notes[noteIndex];
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+                noteIndex++;
+            }
+            
+            setInterval(playNote, 350);
+        }
+
+        // Speech bubble system
+        function addSpeechBubble(text) {
+            speechBubbles.push({
+                x: bird.x, // World coordinates
+                y: bird.y - 40, // World coordinates
+                text: text,
+                life: 120, // frames (2 seconds at 60fps)
+                alpha: 1
+            });
+        }
+
+        function getSpeechText(characterType) {
+            if (characterType === 1) { // Brandin - Nihilistic
+                const texts = [
+                    "this will never end",
+                    "nothing matters",
+                    "we're all dust",
+                    "meaningless",
+                    "pointless existence",
+                    "why continue?",
+                    "eternal suffering"
+                ];
+                return texts[Math.floor(Math.random() * texts.length)];
+            } else if (characterType === 2) { // Javious - Excited
+                const texts = [
+                    "WOOOOOOAH",
+                    "WHAT DO YOU THINK YOURE DOING",
+                    "YEAHHHH",
+                    "AMAZING!",
+                    "INCREDIBLE!",
+                    "FANTASTIC!",
+                    "WOWZA!"
+                ];
+                return texts[Math.floor(Math.random() * texts.length)];
+            } else { // George Bush - Resigned
+                return "Oh well...";
+            }
+        }
+
+        function drawSpeechBubbles() {
+            // Remove expired bubbles first (reverse loop to avoid index issues)
+            for (let i = speechBubbles.length - 1; i >= 0; i--) {
+                const bubble = speechBubbles[i];
+                bubble.life--;
+                bubble.alpha = Math.min(1, bubble.life / 30);
+                bubble.y -= 0.5; // Float upward in world space
+                
+                if (bubble.life <= 0) {
+                    speechBubbles.splice(i, 1);
+                    continue;
+                }
+                
+                // Convert world coordinates to screen coordinates
+                const screenX = bubble.x - camera.x;
+                const screenY = bubble.y - camera.y;
+                
+                // Only draw if on screen
+                if (screenX > -100 && screenX < canvas.width + 100 && 
+                    screenY > -50 && screenY < canvas.height + 50) {
+                    ctx.save();
+                    ctx.globalAlpha = bubble.alpha;
+                    
+                    // Speech bubble background
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2;
+                    
+                    ctx.font = '14px Arial';
+                    const textWidth = ctx.measureText(bubble.text).width;
+                    const padding = 10;
+                    const bubbleWidth = textWidth + padding * 2;
+                    const bubbleHeight = 30;
+                    
+                    // Draw rounded rectangle
+                    ctx.beginPath();
+                    ctx.roundRect(screenX - bubbleWidth/2, screenY - bubbleHeight, bubbleWidth, bubbleHeight, 8);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Draw text
+                    ctx.fillStyle = '#000';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(bubble.text, screenX, screenY - bubbleHeight/2);
+                    
+                    ctx.restore();
+                }
+            }
+        }
+
+        // Add roundRect if not available
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+
+        // Main game loop
+        function gameLoop() {
+            if (!game.characterSelected) {
+                return; // Don't run game until character is selected
+            }
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw world (order matters - background to foreground)
+            drawBackground();
+            drawClouds();
+            drawWaves();
+            drawTrees();
+            drawMountains();
+            drawDunes();
+            drawLavaParticles();
+            drawAreaMarkers();
+            drawSeeds();
+            drawBird();
+            drawSpeechBubbles();
+            
+            // Draw minimap
+            drawMinimap();
+
+            update();
+            requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>
