@@ -1214,6 +1214,87 @@
             });
         }
 
+        function drawGlitter() {
+            if (!game.technoMode) return;
+            
+            glitterParticles.forEach(particle => {
+                const screenX = particle.x - camera.x;
+                const screenY = particle.y - camera.y;
+                
+                // Only draw if on screen (with generous bounds for wrapping)
+                if (screenX > -100 && screenX < canvas.width + 100 && 
+                    screenY > -100 && screenY < canvas.height + 100) {
+                    ctx.save();
+                    ctx.translate(screenX, screenY);
+                    ctx.rotate(particle.rotation);
+                    
+                    // Pulsing glow effect
+                    const pulseSize = particle.size * (1 + Math.sin(particle.pulse) * 0.5);
+                    
+                    // Glitter sparkle with glow
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = particle.color;
+                    ctx.fillStyle = particle.color;
+                    ctx.globalAlpha = 0.9;
+                    
+                    // Draw sparkle shape (X shape)
+                    ctx.beginPath();
+                    ctx.moveTo(-pulseSize, 0);
+                    ctx.lineTo(pulseSize, 0);
+                    ctx.moveTo(0, -pulseSize);
+                    ctx.lineTo(0, pulseSize);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = particle.color;
+                    ctx.stroke();
+                    
+                    // Center dot
+                    ctx.beginPath();
+                    ctx.arc(0, 0, pulseSize * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.restore();
+                }
+            });
+        }
+
+        function drawTechnoModeGlow() {
+            if (!game.technoMode) return;
+            
+            // Create pulsing colored overlay
+            const time = Date.now() * 0.003;
+            const glowIntensity = 0.3 + Math.sin(time) * 0.2;
+            
+            // Cycle through colors: red, green, blue, yellow, pink
+            const colors = [
+                `rgba(255, 0, 0, ${glowIntensity})`,    // Red
+                `rgba(0, 255, 0, ${glowIntensity})`,    // Green
+                `rgba(0, 0, 255, ${glowIntensity})`,    // Blue
+                `rgba(255, 255, 0, ${glowIntensity})`,  // Yellow
+                `rgba(255, 0, 255, ${glowIntensity})`   // Pink
+            ];
+            
+            const colorIndex = Math.floor(time * 0.5) % colors.length;
+            const nextColorIndex = (colorIndex + 1) % colors.length;
+            const blendFactor = (time * 0.5) % 1;
+            
+            // Create gradient overlay
+            const gradient = ctx.createRadialGradient(
+                canvas.width / 2, canvas.height / 2, 0,
+                canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height)
+            );
+            gradient.addColorStop(0, colors[colorIndex]);
+            gradient.addColorStop(1, colors[nextColorIndex]);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add additional pulsing glow from edges
+            ctx.fillStyle = colors[colorIndex];
+            ctx.globalAlpha = glowIntensity * 0.5;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 1;
+        }
+
         function drawAreaMarkers() {
             areas.forEach(area => {
                 const x = area.x - camera.x;
@@ -1686,12 +1767,14 @@
             
             // Draw world (order matters - background to foreground)
             drawBackground();
+            drawTechnoModeGlow(); // Techno Mode colored overlay
             drawClouds();
             drawWaves();
             drawTrees();
             drawMountains();
             drawDunes();
             drawLavaParticles();
+            drawGlitter(); // Draw glitter particles in Techno Mode
             drawAreaMarkers();
             drawSeeds();
             drawBoss(); // Draw boss before bullets for layering
