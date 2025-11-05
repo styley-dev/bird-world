@@ -186,6 +186,41 @@
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.3);
         }
+        
+        .colorOption {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .colorOption:hover {
+            transform: scale(1.2);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .colorOption.selected {
+            border-color: #FFD700;
+            border-width: 4px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+        
+        #petCustomization {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 3000;
+            color: white;
+            display: none;
+            max-width: 500px;
+            width: 90%;
+        }
     </style>
 </head>
 <body>
@@ -197,25 +232,69 @@
             <div class="clickPrompt">Click to continue</div>
         </div>
         <div id="characterSelect">
-            <h1>Choose Your Bird</h1>
-            <div class="characterOption" onclick="selectCharacter(1)">
-                <canvas class="characterFace" id="face1" width="150" height="150"></canvas>
-                <h2>Brandin 🇮🇹</h2>
-                <p>An Italian bird with intense vibes</p>
-            </div>
-            <div class="characterOption" onclick="selectCharacter(2)">
-                <canvas class="characterFace" id="face2" width="150" height="150"></canvas>
-                <h2>Javious Schnitzbaum 🎩✨</h2>
-                <p>A bird with a sun hat and glitter eyelashes</p>
-            </div>
-            <div class="characterOption" onclick="selectCharacter(3)">
-                <canvas class="characterFace" id="face3" width="150" height="150"></canvas>
-                <h2>George Bush</h2>
-                <p>Former president, current bird</p>
-            </div>
-            <div class="characterOption" onclick="selectCharacter(4)" style="border: 3px solid #ff00ff; background: rgba(255, 0, 255, 0.2);">
-                <h2 style="font-size: 28px; text-shadow: 0 0 20px #ff00ff;">⚡ TECHNO MODE ⚡</h2>
-                <p style="font-size: 16px; color: #00ffff; text-shadow: 0 0 10px #00ffff;">INTENSE VISUAL OVERLOAD</p>
+            <h1>Create Your Bird</h1>
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 15px; max-width: 800px; width: 90%;">
+                <!-- Bird Preview -->
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <canvas id="birdPreview" width="200" height="200" style="border: 3px solid rgba(255, 255, 255, 0.5); border-radius: 50%; background: rgba(0, 0, 0, 0.3);"></canvas>
+                </div>
+                
+                <!-- Name Input -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Bird Name:</label>
+                    <input type="text" id="birdNameInput" placeholder="Enter your bird's name" maxlength="20" style="width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); color: white;">
+                </div>
+                
+                <!-- Bird Color -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Bird Color:</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <div class="colorOption" data-color="#FFD700" style="background: #FFD700;"></div>
+                        <div class="colorOption" data-color="#FF69B4" style="background: #FF69B4;"></div>
+                        <div class="colorOption" data-color="#228B22" style="background: #228B22;"></div>
+                        <div class="colorOption" data-color="#4169E1" style="background: #4169E1;"></div>
+                        <div class="colorOption" data-color="#FF6347" style="background: #FF6347;"></div>
+                        <div class="colorOption" data-color="#FF1493" style="background: #FF1493;"></div>
+                        <div class="colorOption" data-color="#00CED1" style="background: #00CED1;"></div>
+                        <div class="colorOption" data-color="#FFA500" style="background: #FFA500;"></div>
+                        <div class="colorOption" data-color="#9370DB" style="background: #9370DB;"></div>
+                        <div class="colorOption" data-color="#32CD32" style="background: #32CD32;"></div>
+                    </div>
+                </div>
+                
+                <!-- Hat Selection -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Hat:</label>
+                    <select id="hatSelect" style="width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); color: white;">
+                        <option value="none">None</option>
+                        <option value="sunhat">Sun Hat</option>
+                        <option value="tophat">Top Hat</option>
+                        <option value="cap">Baseball Cap</option>
+                        <option value="crown">Crown</option>
+                    </select>
+                </div>
+                
+                <!-- Scarf Selection -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Scarf:</label>
+                    <select id="scarfSelect" style="width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); color: white;">
+                        <option value="none">None</option>
+                        <option value="red">Red Scarf</option>
+                        <option value="blue">Blue Scarf</option>
+                        <option value="green">Green Scarf</option>
+                        <option value="yellow">Yellow Scarf</option>
+                        <option value="striped">Striped Scarf</option>
+                    </select>
+                </div>
+                
+                <!-- Bird Size -->
+                <div style="margin-bottom: 30px;">
+                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Size: <span id="sizeValue">30</span></label>
+                    <input type="range" id="sizeSlider" min="20" max="50" value="30" style="width: 100%;">
+                </div>
+                
+                <!-- Start Button -->
+                <button onclick="startGameWithCustomization()" style="width: 100%; padding: 15px; font-size: 20px; font-weight: bold; background: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer;">Start Game</button>
             </div>
         </div>
         <div id="ui">
@@ -224,6 +303,31 @@
             <div>Seeds: <span id="seeds">0</span></div>
             <div id="bossStatus" style="display: none; color: #ff0000; font-weight: bold;">BOSS APPEARED!</div>
             <button id="storeBtn" onclick="toggleStore()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🛒 STORE</button>
+        </div>
+        <div id="petCustomization" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 20px; border-radius: 15px; z-index: 3000; color: white; max-width: 500px; width: 90%; border: 3px solid #FFD700;">
+            <h2 style="text-align: center; margin-bottom: 15px; color: #FFD700;">Customize Your Pet</h2>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <canvas id="petPreview" width="150" height="150" style="border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%; background: rgba(0, 0, 0, 0.3);"></canvas>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Pet Name:</label>
+                <input type="text" id="petNameInput" placeholder="Pet name" maxlength="15" style="width: 100%; padding: 8px; font-size: 14px; border-radius: 5px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); color: white;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Color:</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="petColorOption" data-color="#FFD700" style="background: #FFD700; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
+                    <div class="petColorOption" data-color="#FF69B4" style="background: #FF69B4; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
+                    <div class="petColorOption" data-color="#228B22" style="background: #228B22; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
+                    <div class="petColorOption" data-color="#4169E1" style="background: #4169E1; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
+                    <div class="petColorOption" data-color="#FF6347" style="background: #FF6347; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
+                    <div class="petColorOption" data-color="#00CED1" style="background: #00CED1; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="confirmPetCustomization()" style="flex: 1; padding: 10px; background: #228B22; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Confirm</button>
+                <button onclick="cancelPetCustomization()" style="flex: 1; padding: 10px; background: #666; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Cancel</button>
+            </div>
         </div>
         <div id="store" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 400px; border: 3px solid #FFD700;">
             <h2 style="text-align: center; margin-bottom: 20px; color: #FFD700;">🛒 HELPER BIRD STORE</h2>
@@ -358,7 +462,178 @@
         function skipTitleScreen() {
             document.getElementById('titleScreen').style.display = 'none';
             document.getElementById('characterSelect').style.display = 'flex';
-            drawCharacterFaces();
+            initBirdCustomization();
+        }
+        
+        // Initialize bird customization menu
+        function initBirdCustomization() {
+            // Set default selected color
+            document.querySelectorAll('.colorOption')[0].classList.add('selected');
+            bird.color = '#FFD700';
+            
+            // Add color selection handlers
+            document.querySelectorAll('.colorOption').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.colorOption').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    bird.color = this.getAttribute('data-color');
+                    updateBirdPreview();
+                });
+            });
+            
+            // Size slider handler
+            const sizeSlider = document.getElementById('sizeSlider');
+            const sizeValue = document.getElementById('sizeValue');
+            sizeSlider.addEventListener('input', function() {
+                sizeValue.textContent = this.value;
+                bird.size = parseInt(this.value);
+                updateBirdPreview();
+            });
+            
+            // Hat and scarf change handlers
+            document.getElementById('hatSelect').addEventListener('change', updateBirdPreview);
+            document.getElementById('scarfSelect').addEventListener('change', updateBirdPreview);
+            
+            // Name input handler
+            document.getElementById('birdNameInput').addEventListener('input', function() {
+                bird.name = this.value || '';
+            });
+            
+            // Initial preview
+            updateBirdPreview();
+        }
+        
+        // Update bird preview canvas
+        function updateBirdPreview() {
+            const preview = document.getElementById('birdPreview');
+            const ctx = preview.getContext('2d');
+            ctx.clearRect(0, 0, 200, 200);
+            
+            const centerX = 100;
+            const centerY = 100;
+            const size = parseInt(document.getElementById('sizeSlider').value) || 30;
+            const color = bird.color;
+            const hat = document.getElementById('hatSelect').value;
+            const scarf = document.getElementById('scarfSelect').value;
+            
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            
+            // Body
+            const bodyGradient = ctx.createRadialGradient(-size * 0.2, -size * 0.1, 0, 0, 0, size * 0.6);
+            bodyGradient.addColorStop(0, color);
+            bodyGradient.addColorStop(1, shadeColor(color, -30));
+            ctx.fillStyle = bodyGradient;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, size * 0.6, size * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Scarf
+            if (scarf !== 'none') {
+                let scarfColor = '#FF6347';
+                if (scarf === 'blue') scarfColor = '#4169E1';
+                else if (scarf === 'green') scarfColor = '#228B22';
+                else if (scarf === 'yellow') scarfColor = '#FFD700';
+                else if (scarf === 'striped') {
+                    // Draw striped scarf
+                    ctx.fillStyle = '#FF0000';
+                    ctx.fillRect(-size * 0.4, size * 0.1, size * 0.8, size * 0.15);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(-size * 0.4, size * 0.15, size * 0.8, size * 0.05);
+                    ctx.fillStyle = '#0000FF';
+                    ctx.fillRect(-size * 0.4, size * 0.2, size * 0.8, size * 0.05);
+                } else {
+                    ctx.fillStyle = scarfColor;
+                    ctx.fillRect(-size * 0.4, size * 0.1, size * 0.8, size * 0.2);
+                }
+                if (scarf !== 'striped') {
+                    ctx.fillStyle = scarfColor;
+                    ctx.fillRect(-size * 0.4, size * 0.1, size * 0.8, size * 0.2);
+                }
+            }
+            
+            // Wings
+            ctx.fillStyle = shadeColor(color, 20);
+            ctx.beginPath();
+            ctx.ellipse(-size * 0.3, 0, size * 0.5, size * 0.3, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(-size * 0.3, 0, size * 0.5, size * 0.3, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Hat
+            if (hat !== 'none') {
+                if (hat === 'sunhat') {
+                    const hatGradient = ctx.createRadialGradient(0, -size * 0.5, 0, 0, -size * 0.5, size * 0.6);
+                    hatGradient.addColorStop(0, '#FFF8DC');
+                    hatGradient.addColorStop(1, '#FFD700');
+                    ctx.fillStyle = hatGradient;
+                    ctx.beginPath();
+                    ctx.arc(0, -size * 0.5, size * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (hat === 'tophat') {
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(-size * 0.3, -size * 0.8, size * 0.6, size * 0.4);
+                    ctx.fillRect(-size * 0.4, -size * 0.9, size * 0.8, size * 0.1);
+                } else if (hat === 'cap') {
+                    ctx.fillStyle = '#4169E1';
+                    ctx.beginPath();
+                    ctx.arc(0, -size * 0.4, size * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#FF0000';
+                    ctx.fillRect(-size * 0.2, -size * 0.9, size * 0.4, size * 0.1);
+                } else if (hat === 'crown') {
+                    ctx.fillStyle = '#FFD700';
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                        const x = Math.cos(angle) * size * 0.5;
+                        const y = -size * 0.6 + Math.sin(angle) * size * 0.1;
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+            
+            // Beak
+            ctx.fillStyle = '#FF6347';
+            ctx.beginPath();
+            ctx.moveTo(size * 0.5, 0);
+            ctx.lineTo(size * 0.75, -size * 0.1);
+            ctx.lineTo(size * 0.75, size * 0.1);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Eye
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(size * 0.2, -size * 0.1, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+        
+        // Start game with customization
+        function startGameWithCustomization() {
+            const nameInput = document.getElementById('birdNameInput');
+            bird.name = nameInput.value.trim() || 'Bird';
+            bird.hat = document.getElementById('hatSelect').value;
+            bird.scarf = document.getElementById('scarfSelect').value;
+            bird.size = parseInt(document.getElementById('sizeSlider').value);
+            
+            game.characterSelected = true;
+            game.characterType = 1; // Default type for custom birds
+            
+            // Hide character select screen
+            document.getElementById('characterSelect').style.display = 'none';
+            
+            // Start music
+            startMusic(1);
+            
+            // Start game loop
+            gameLoop();
         }
 
         // Draw improved bird faces on character selection
@@ -571,8 +846,14 @@
             angle: 0,
             color: '#FFD700',
             wingPhase: 0,
-            characterType: 1
+            characterType: 1,
+            name: '',
+            hat: 'none',
+            scarf: 'none'
         };
+        
+        // Current pet customization state (when buying)
+        let pendingPetCustomization = null;
 
         // Helper Bird System
         function getHelperBirdCost(type) {
@@ -620,8 +901,87 @@
         function buyHelperBird(type) {
             const cost = getHelperBirdCost(type);
             if (game.seeds >= cost) {
+                // Store the purchase info and show customization modal
+                pendingPetCustomization = {
+                    type: type,
+                    cost: cost
+                };
+                
+                // Reset pet customization UI
+                document.getElementById('petNameInput').value = '';
+                document.querySelectorAll('.petColorOption').forEach(opt => opt.classList.remove('selected'));
+                document.querySelectorAll('.petColorOption')[0].classList.add('selected');
+                
+                // Show pet customization modal
+                document.getElementById('petCustomization').style.display = 'block';
+                updatePetPreview();
+            }
+        }
+        
+        function updatePetPreview() {
+            const preview = document.getElementById('petPreview');
+            const ctx = preview.getContext('2d');
+            ctx.clearRect(0, 0, 150, 150);
+            
+            const selectedColor = document.querySelector('.petColorOption.selected');
+            const color = selectedColor ? selectedColor.getAttribute('data-color') : '#FFD700';
+            
+            const centerX = 75;
+            const centerY = 75;
+            const size = 20; // Smaller for pet preview
+            
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            
+            // Body
+            const bodyGradient = ctx.createRadialGradient(-size * 0.2, -size * 0.1, 0, 0, 0, size * 0.6);
+            bodyGradient.addColorStop(0, color);
+            bodyGradient.addColorStop(1, shadeColor(color, -30));
+            ctx.fillStyle = bodyGradient;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, size * 0.6, size * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Wings
+            ctx.fillStyle = shadeColor(color, 20);
+            ctx.beginPath();
+            ctx.ellipse(-size * 0.3, 0, size * 0.5, size * 0.3, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(-size * 0.3, 0, size * 0.5, size * 0.3, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Beak
+            ctx.fillStyle = '#FF6347';
+            ctx.beginPath();
+            ctx.moveTo(size * 0.5, 0);
+            ctx.lineTo(size * 0.75, -size * 0.1);
+            ctx.lineTo(size * 0.75, size * 0.1);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Eye
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(size * 0.2, -size * 0.1, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+        
+        function confirmPetCustomization() {
+            if (!pendingPetCustomization) return;
+            
+            const cost = pendingPetCustomization.cost;
+            const type = pendingPetCustomization.type;
+            
+            if (game.seeds >= cost) {
                 game.seeds -= cost;
                 game.helperBirdCounts[type]++;
+                
+                const petName = document.getElementById('petNameInput').value.trim() || 'Pet';
+                const selectedColor = document.querySelector('.petColorOption.selected');
+                const petColor = selectedColor ? selectedColor.getAttribute('data-color') : '#FFD700';
                 
                 const helperBird = {
                     type: type,
@@ -635,17 +995,18 @@
                     targetSeed: null,
                     lastCollectionTime: 0,
                     sleepPhase: 0,
-                    smallBirds: []
+                    smallBirds: [],
+                    name: petName,
+                    color: petColor,
+                    hat: 'none',
+                    scarf: 'none'
                 };
                 
                 if (type === 1) {
-                    helperBird.color = '#228B22';
                     helperBird.speed = 3;
                 } else if (type === 2) {
-                    helperBird.color = '#FF69B4';
                     helperBird.speed = 5;
                 } else if (type === 3) {
-                    helperBird.color = '#4169E1';
                     helperBird.speed = 0;
                     for (let i = 0; i < 3; i++) {
                         helperBird.smallBirds.push({
@@ -657,7 +1018,7 @@
                             angle: Math.random() * Math.PI * 2,
                             wingPhase: Math.random() * Math.PI * 2,
                             targetSeed: null,
-                            color: '#4169E1',
+                            color: petColor,
                             speed: 2,
                             hasSeed: false,
                             returning: false
@@ -668,8 +1029,35 @@
                 game.helperBirds.push(helperBird);
                 updateStoreUI();
                 document.getElementById('seeds').textContent = game.seeds;
+                
+                // Hide customization modal
+                document.getElementById('petCustomization').style.display = 'none';
+                pendingPetCustomization = null;
             }
         }
+        
+        function cancelPetCustomization() {
+            document.getElementById('petCustomization').style.display = 'none';
+            pendingPetCustomization = null;
+        }
+        
+        // Initialize pet color selection
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pet color options (will be added after page loads)
+            setTimeout(() => {
+                const petColorOptions = document.querySelectorAll('.petColorOption');
+                if (petColorOptions.length > 0) {
+                    petColorOptions[0].classList.add('selected');
+                    petColorOptions.forEach(option => {
+                        option.addEventListener('click', function() {
+                            petColorOptions.forEach(opt => opt.classList.remove('selected'));
+                            this.classList.add('selected');
+                            updatePetPreview();
+                        });
+                    });
+                }
+            }, 100);
+        });
 
         function buySpeedBoost() {
             const cost = 150 * game.speedLevel;
@@ -718,12 +1106,14 @@
 
         // Seeds (collectibles)
         const seeds = [];
+        const SEED_RESPAWN_TIME = 5000; // 5 seconds
         function generateSeeds() {
             for (let i = 0; i < 100; i++) {
                 seeds.push({
                     x: Math.random() * game.worldWidth,
                     y: Math.random() * game.worldHeight,
                     collected: false,
+                    collectedTime: 0,
                     size: 8,
                     color: '#8B4513',
                     pulse: Math.random() * Math.PI * 2
@@ -731,6 +1121,15 @@
             }
         }
         generateSeeds();
+        
+        function respawnSeed(seed) {
+            // Respawn in a random location
+            seed.x = Math.random() * game.worldWidth;
+            seed.y = Math.random() * game.worldHeight;
+            seed.collected = false;
+            seed.collectedTime = 0;
+            seed.pulse = Math.random() * Math.PI * 2;
+        }
 
         // Clouds
         const clouds = [];
@@ -1024,6 +1423,7 @@
                     // Increased collection range for better feel
                     if (dist < bird.size + seed.size + 5) {
                         seed.collected = true;
+                        seed.collectedTime = Date.now();
                         game.seeds += game.seedMultiplier;
                         game.score += 10 * game.seedMultiplier;
                         // Add speech bubble
@@ -1036,7 +1436,16 @@
                         }
                     }
                 }
-                seed.pulse += 0.1;
+                
+                // Progressive respawn logic
+                if (seed.collected && seed.collectedTime > 0) {
+                    const timeSinceCollected = Date.now() - seed.collectedTime;
+                    if (timeSinceCollected >= SEED_RESPAWN_TIME) {
+                        respawnSeed(seed);
+                    }
+                } else {
+                    seed.pulse += 0.1;
+                }
             });
 
             // Update current area
@@ -1529,21 +1938,68 @@
             ctx.ellipse(0, 0, bird.size * 0.6, bird.size * 0.4, 0, 0, Math.PI * 2);
             ctx.fill();
 
-            // Character-specific features
+            // Character-specific features (for old character types) or customization
             ctx.shadowBlur = 0; // Disable shadow for details
-            if (bird.characterType === 1) {
-                // Brandin - Italian bird (green, white, red stripes)
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(-bird.size * 0.5, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
-                ctx.fillStyle = '#CE2B37';
-                ctx.fillRect(-bird.size * 0.15, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
-                // Add outline for better visibility
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 1;
-                ctx.stroke();
+            
+            // Scarf (drawn before body details)
+            if (bird.scarf && bird.scarf !== 'none') {
+                let scarfColor = '#FF6347';
+                if (bird.scarf === 'blue') scarfColor = '#4169E1';
+                else if (bird.scarf === 'green') scarfColor = '#228B22';
+                else if (bird.scarf === 'yellow') scarfColor = '#FFD700';
+                else if (bird.scarf === 'striped') {
+                    ctx.fillStyle = '#FF0000';
+                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.1, bird.size * 0.8, bird.size * 0.15);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.15, bird.size * 0.8, bird.size * 0.05);
+                    ctx.fillStyle = '#0000FF';
+                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.2, bird.size * 0.8, bird.size * 0.05);
+                } else {
+                    ctx.fillStyle = scarfColor;
+                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.1, bird.size * 0.8, bird.size * 0.2);
+                }
+                if (bird.scarf !== 'striped') {
+                    ctx.fillStyle = scarfColor;
+                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.1, bird.size * 0.8, bird.size * 0.2);
+                }
+            }
+            
+            // Hat
+            if (bird.hat && bird.hat !== 'none') {
+                if (bird.hat === 'sunhat') {
+                    const hatGradient = ctx.createRadialGradient(0, -bird.size * 0.5, 0, 0, -bird.size * 0.5, bird.size * 0.6);
+                    hatGradient.addColorStop(0, '#FFF8DC');
+                    hatGradient.addColorStop(1, '#FFD700');
+                    ctx.fillStyle = hatGradient;
+                    ctx.beginPath();
+                    ctx.arc(0, -bird.size * 0.5, bird.size * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (bird.hat === 'tophat') {
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(-bird.size * 0.3, -bird.size * 0.8, bird.size * 0.6, bird.size * 0.4);
+                    ctx.fillRect(-bird.size * 0.4, -bird.size * 0.9, bird.size * 0.8, bird.size * 0.1);
+                } else if (bird.hat === 'cap') {
+                    ctx.fillStyle = '#4169E1';
+                    ctx.beginPath();
+                    ctx.arc(0, -bird.size * 0.4, bird.size * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#FF0000';
+                    ctx.fillRect(-bird.size * 0.2, -bird.size * 0.9, bird.size * 0.4, bird.size * 0.1);
+                } else if (bird.hat === 'crown') {
+                    ctx.fillStyle = '#FFD700';
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                        const x = Math.cos(angle) * bird.size * 0.5;
+                        const y = -bird.size * 0.6 + Math.sin(angle) * bird.size * 0.1;
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                }
             } else if (bird.characterType === 2) {
-                // Javious - Sun hat and glitter eyelashes
-                // Sun hat with gradient
+                // Javious - Sun hat (old character)
                 const hatGradient = ctx.createRadialGradient(0, -bird.size * 0.5, 0, 0, -bird.size * 0.5, bird.size * 0.6);
                 hatGradient.addColorStop(0, '#FFF8DC');
                 hatGradient.addColorStop(1, '#FFD700');
@@ -1554,22 +2010,15 @@
                 // Hat band
                 ctx.fillStyle = '#FF1493';
                 ctx.fillRect(-bird.size * 0.45, -bird.size * 0.55, bird.size * 0.9, bird.size * 0.1);
-                // Glitter eyelashes
-                ctx.strokeStyle = '#FF1493';
-                ctx.lineWidth = 2;
-                ctx.shadowBlur = 5;
-                ctx.shadowColor = '#FF1493';
-                for (let i = 0; i < 4; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(bird.size * 0.25, -bird.size * 0.05);
-                    ctx.lineTo(bird.size * 0.3 + i * 1.5, -bird.size * 0.12 - i * 1.5);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(-bird.size * 0.25, -bird.size * 0.05);
-                    ctx.lineTo(-bird.size * 0.3 - i * 1.5, -bird.size * 0.12 - i * 1.5);
-                    ctx.stroke();
-                }
-                ctx.shadowBlur = 0;
+            } else if (bird.characterType === 1) {
+                // Brandin - Italian bird (green, white, red stripes)
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(-bird.size * 0.5, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
+                ctx.fillStyle = '#CE2B37';
+                ctx.fillRect(-bird.size * 0.15, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.stroke();
             } else if (bird.characterType === 3) {
                 // George Bush - Presidential bird (tie and suit)
                 ctx.fillStyle = '#000080';
@@ -1626,6 +2075,20 @@
             ctx.fill();
 
             ctx.restore();
+            
+            // Draw bird name above bird
+            if (bird.name) {
+                ctx.save();
+                ctx.globalAlpha = 0.7; // Semi-opaque
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillText(bird.name, screenX, screenY - bird.size - 10);
+                ctx.restore();
+            }
         }
         
         // Helper function to shade colors
@@ -1786,10 +2249,11 @@
                 ctx.translate(screenX, screenY);
                 ctx.rotate(helperBird.angle);
                 
-                // Body with gradient
+                // Body with gradient - use custom color if available
+                const birdColor = helperBird.color || (helperBird.type === 1 ? '#228B22' : helperBird.type === 2 ? '#FF69B4' : '#4169E1');
                 const bodyGradient = ctx.createRadialGradient(-helperBird.size * 0.2, -helperBird.size * 0.1, 0, 0, 0, helperBird.size * 0.6);
-                bodyGradient.addColorStop(0, helperBird.color);
-                bodyGradient.addColorStop(1, shadeColor(helperBird.color, -30));
+                bodyGradient.addColorStop(0, birdColor);
+                bodyGradient.addColorStop(1, shadeColor(birdColor, -30));
                 ctx.fillStyle = bodyGradient;
                 ctx.beginPath();
                 ctx.ellipse(0, 0, helperBird.size * 0.6, helperBird.size * 0.4, 0, 0, Math.PI * 2);
@@ -1797,7 +2261,7 @@
                 
                 // Wings
                 const wingAngle = Math.sin(helperBird.wingPhase) * 0.5;
-                ctx.fillStyle = shadeColor(helperBird.color, 20);
+                ctx.fillStyle = shadeColor(birdColor, 20);
                 ctx.beginPath();
                 ctx.ellipse(-helperBird.size * 0.3, 0, helperBird.size * 0.5, helperBird.size * 0.3, wingAngle, 0, Math.PI * 2);
                 ctx.fill();
@@ -1820,14 +2284,39 @@
                 ctx.arc(helperBird.size * 0.2, -helperBird.size * 0.1, 3, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Character-specific features
-                if (helperBird.type === 1) {
+                // Draw name above helper bird
+                ctx.restore();
+                
+                if (helperBird.name) {
+                    ctx.save();
+                    ctx.globalAlpha = 0.7;
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    ctx.shadowBlur = 4;
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                    ctx.fillText(helperBird.name, screenX, screenY - helperBird.size - 8);
+                    ctx.restore();
+                }
+                
+                ctx.save();
+                ctx.translate(screenX, screenY);
+                ctx.rotate(helperBird.angle);
+                
+                // Character-specific features (only if no custom color or default colors)
+                const isDefaultColor = !helperBird.color || 
+                    (helperBird.type === 1 && helperBird.color === '#228B22') ||
+                    (helperBird.type === 2 && helperBird.color === '#FF69B4') ||
+                    (helperBird.type === 3 && helperBird.color === '#4169E1');
+                
+                if (isDefaultColor && helperBird.type === 1) {
                     // Brandin - Italian stripes
                     ctx.fillStyle = '#FFFFFF';
                     ctx.fillRect(-helperBird.size * 0.4, -helperBird.size * 0.15, helperBird.size * 0.3, helperBird.size * 0.3);
                     ctx.fillStyle = '#CE2B37';
                     ctx.fillRect(-helperBird.size * 0.1, -helperBird.size * 0.15, helperBird.size * 0.3, helperBird.size * 0.3);
-                } else if (helperBird.type === 2) {
+                } else if (isDefaultColor && helperBird.type === 2) {
                     // Javious - Sun hat
                     ctx.fillStyle = '#FFD700';
                     ctx.beginPath();
