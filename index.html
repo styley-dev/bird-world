@@ -251,6 +251,7 @@
                     <div>🌾 Seeds: <span id="seeds">0</span> | 💰 Gold: <span id="gold">0</span></div>
                     <div>⚡ Energy: <span id="energy">100</span>/<span id="maxEnergy">100</span></div>
                     <div>📍 Area: <span id="area">Sky</span></div>
+                    <div>🪶 Name: <span id="birdName">Bird</span></div>
                 </div>
                 <div>
                     <div>Score: <span id="score">0</span></div>
@@ -262,6 +263,7 @@
                 <button onclick="toggleInventory()" style="padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🎒 INVENTORY</button>
                 <button onclick="toggleFarming()" style="padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🌱 FARM</button>
                 <button onclick="toggleQuests()" style="padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">📜 QUESTS</button>
+                <button id="builderBtn" onclick="toggleBuilder()" style="padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🛠️ BUILD BIRD</button>
             </div>
         </div>
         <div id="inventory" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 500px; max-width: 700px; border: 3px solid #FFD700; max-height: 80vh; overflow-y: auto;">
@@ -283,6 +285,15 @@
             <h2 style="text-align: center; margin-bottom: 20px; color: #FFD700;">📜 QUESTS</h2>
             <div id="questList" style="margin-bottom: 20px;"></div>
             <button onclick="toggleQuests()" style="width: 100%; padding: 10px; background: #666; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Close</button>
+=======
+            <div>Score: <span id="score">0</span></div>
+            <div>Area: <span id="area">Sky</span></div>
+            <div>Seeds: <span id="seeds">0</span></div>
+            <div>Name: <span id="birdName">Bird</span></div>
+            <div id="bossStatus" style="display: none; color: #ff0000; font-weight: bold;">BOSS APPEARED!</div>
+            <button id="storeBtn" onclick="toggleStore()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🛒 STORE</button>
+            <button id="builderBtn" onclick="toggleBuilder()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🛠️ BUILD BIRD</button>
+>>>>>>> b58a27c (Adjust index.html after initial commit (finalize UI wiring))
         </div>
         <div id="store" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 400px; border: 3px solid #FFD700;">
             <h2 style="text-align: center; margin-bottom: 20px; color: #FFD700;">🛒 HELPER BIRD STORE</h2>
@@ -329,6 +340,30 @@
                 </div>
             </div>
             <button onclick="toggleStore()" style="width: 100%; padding: 10px; background: #666; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; margin-top: 10px;">Close Store</button>
+        </div>
+        <div id="builder" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 420px; border: 3px solid #00BFFF;">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #00BFFF;">🛠️ BUILD YOUR BIRD</h2>
+            <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px; align-items: center;">
+                <label for="inputName" style="opacity: 0.9;">Name</label>
+                <input id="inputName" type="text" maxlength="24" placeholder="Your bird's name" style="padding: 8px; border-radius: 6px; border: 1px solid #444; background: #111; color: #fff;">
+                <label for="inputColor" style="opacity: 0.9;">Body Color</label>
+                <input id="inputColor" type="color" value="#FFD700" style="width: 60px; height: 34px; border: none; background: transparent;">
+                <label for="inputBeak" style="opacity: 0.9;">Beak Color</label>
+                <input id="inputBeak" type="color" value="#FF6347" style="width: 60px; height: 34px; border: none; background: transparent;">
+                <label for="inputAccessory" style="opacity: 0.9;">Accessory</label>
+                <select id="inputAccessory" style="padding: 8px; border-radius: 6px; border: 1px solid #444; background: #111; color: #fff;">
+                    <option value="none">None</option>
+                    <option value="hat">Sun Hat</option>
+                    <option value="glasses">Glasses</option>
+                    <option value="crown">Crown</option>
+                </select>
+                <label for="inputSize" style="opacity: 0.9;">Size</label>
+                <input id="inputSize" type="range" min="20" max="50" step="1" value="30">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 18px;">
+                <button onclick="applyBuild()" style="flex: 1; padding: 10px; background: #00BFFF; border: none; border-radius: 6px; color: black; font-weight: bold; cursor: pointer;">Apply</button>
+                <button onclick="toggleBuilder()" style="flex: 1; padding: 10px; background: #666; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer;">Close</button>
+            </div>
         </div>
         <canvas id="minimap"></canvas>
         <canvas id="gameCanvas"></canvas>
@@ -617,7 +652,8 @@
             npcRelationships: {},
             collectedItems: {},
             worldEvents: {},
-            saveData: null
+            saveData: null,
+            birdName: 'Bird'
         };
         
         // Campaign Chapters - Rich story-driven progression (10+ hours of content)
@@ -899,7 +935,11 @@ You are no longer just a bird. You are a legend, a keeper of the old ways, and t
             angle: 0,
             color: '#FFD700',
             wingPhase: 0,
-            characterType: 1
+            characterType: 1,
+            name: 'Bird',
+            customColor: null,
+            beakColor: '#FF6347',
+            accessory: 'none'
         };
 
         // Helper Bird System
@@ -917,6 +957,49 @@ You are no longer just a bird. You are a legend, a keeper of the old ways, and t
             } else {
                 store.style.display = 'none';
             }
+        }
+
+        function toggleBuilder() {
+            const builder = document.getElementById('builder');
+            if (builder.style.display === 'none') {
+                updateBuilderUI();
+                builder.style.display = 'block';
+            } else {
+                builder.style.display = 'none';
+            }
+        }
+
+        function updateBuilderUI() {
+            document.getElementById('inputName').value = bird.name || '';
+            document.getElementById('inputColor').value = (bird.customColor || bird.color);
+            document.getElementById('inputBeak').value = bird.beakColor || '#FF6347';
+            document.getElementById('inputAccessory').value = bird.accessory || 'none';
+            document.getElementById('inputSize').value = Math.round(bird.size);
+        }
+
+        function applyBuild() {
+            const name = document.getElementById('inputName').value.trim();
+            const bodyColor = document.getElementById('inputColor').value;
+            const beakColor = document.getElementById('inputBeak').value;
+            const accessory = document.getElementById('inputAccessory').value;
+            const size = parseInt(document.getElementById('inputSize').value, 10) || 30;
+
+            bird.name = name || 'Bird';
+            game.birdName = bird.name;
+            document.getElementById('birdName').textContent = game.birdName;
+
+            bird.customColor = bodyColor;
+            bird.beakColor = beakColor;
+            bird.accessory = accessory;
+            bird.size = size;
+
+            // If custom build is applied, disable techno mode visuals unless Techno Mode character is chosen
+            if (game.characterType !== 4) {
+                game.technoMode = false;
+            }
+
+            // Close builder
+            toggleBuilder();
         }
 
         function updateStoreUI() {
@@ -1475,6 +1558,20 @@ You are no longer just a bird. You are a legend, a keeper of the old ways, and t
                             // Hide boss UI
                             document.getElementById('bossStatus').style.display = 'none';
                             document.getElementById('bossInstructions').style.display = 'none';
+                            // Drop a burst of seeds on win
+                            for (let d = 0; d < 20; d++) {
+                                const angle = (Math.PI * 2) * (d / 20);
+                                const radius = 20 + Math.random() * 100;
+                                seeds.push({
+                                    x: boss.x + Math.cos(angle) * radius,
+                                    y: boss.y + Math.sin(angle) * radius,
+                                    collected: false,
+                                    size: 10,
+                                    color: '#8B4513',
+                                    pulse: Math.random() * Math.PI * 2
+                                });
+                            }
+                            addSpeechBubble('Seed loot!', boss.x, boss.y - 80);
                         }
                     }
                 }
@@ -1881,8 +1978,9 @@ You are no longer just a bird. You are a legend, a keeper of the old ways, and t
 
             // Body with gradient
             const bodyGradient = ctx.createRadialGradient(-bird.size * 0.2, -bird.size * 0.1, 0, 0, 0, bird.size * 0.6);
-            bodyGradient.addColorStop(0, bird.color);
-            bodyGradient.addColorStop(1, shadeColor(bird.color, -30));
+            const baseColor = (bird.customColor || bird.color);
+            bodyGradient.addColorStop(0, baseColor);
+            bodyGradient.addColorStop(1, shadeColor(baseColor, -30));
             ctx.fillStyle = bodyGradient;
             ctx.beginPath();
             ctx.ellipse(0, 0, bird.size * 0.6, bird.size * 0.4, 0, 0, Math.PI * 2);
@@ -1957,12 +2055,9 @@ You are no longer just a bird. You are a legend, a keeper of the old ways, and t
             ctx.ellipse(-bird.size * 0.3, 0, bird.size * 0.5, bird.size * 0.3, -wingAngle, 0, Math.PI * 2);
             ctx.fill();
 
-            // Beak with gradient
+            // Beak
             ctx.shadowBlur = 0;
-            const beakGradient = ctx.createLinearGradient(bird.size * 0.5, 0, bird.size * 0.8, 0);
-            beakGradient.addColorStop(0, '#FF6347');
-            beakGradient.addColorStop(1, '#FF4500');
-            ctx.fillStyle = beakGradient;
+            ctx.fillStyle = bird.beakColor || '#FF6347';
             ctx.beginPath();
             ctx.moveTo(bird.size * 0.5, 0);
             ctx.lineTo(bird.size * 0.85, -bird.size * 0.12);
@@ -1984,6 +2079,54 @@ You are no longer just a bird. You are a legend, a keeper of the old ways, and t
             ctx.arc(bird.size * 0.22, -bird.size * 0.12, 2, 0, Math.PI * 2);
             ctx.fill();
 
+            // Accessory overlays (from builder)
+            if (bird.accessory === 'glasses') {
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(bird.size * 0.15, -bird.size * 0.1, 5, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(bird.size * 0.28, -bird.size * 0.1, 5, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(bird.size * 0.20, -bird.size * 0.1);
+                ctx.lineTo(bird.size * 0.23, -bird.size * 0.1);
+                ctx.stroke();
+            } else if (bird.accessory === 'crown') {
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.moveTo(-6, -bird.size * 0.5 - 2);
+                ctx.lineTo(-2, -bird.size * 0.7);
+                ctx.lineTo(2, -bird.size * 0.5 - 2);
+                ctx.lineTo(6, -bird.size * 0.7);
+                ctx.lineTo(10, -bird.size * 0.5 - 2);
+                ctx.closePath();
+                ctx.fill();
+            } else if (bird.accessory === 'hat') {
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(0, -bird.size * 0.5, bird.size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#FFF8DC';
+                ctx.beginPath();
+                ctx.arc(0, -bird.size * 0.5, bird.size * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.restore();
+
+            // Draw custom name above bird (screen space)
+            const labelX = screenX;
+            const labelY = screenY - bird.size - 18;
+            ctx.save();
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            ctx.fillRect(labelX - ctx.measureText(bird.name || 'Bird').width / 2 - 6, labelY - 12, ctx.measureText(bird.name || 'Bird').width + 12, 22);
+            ctx.fillStyle = '#fff';
+            ctx.fillText(bird.name || 'Bird', labelX, labelY);
             ctx.restore();
         }
         
@@ -2586,6 +2729,9 @@ You are no longer just a bird. You are a legend, a keeper of the old ways, and t
             
             // Start game loop
             gameLoop();
+
+            // Initialize UI name display
+            document.getElementById('birdName').textContent = game.birdName;
         }
 
         // Music generation functions
