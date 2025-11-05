@@ -186,41 +186,6 @@
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.3);
         }
-        
-        .colorOption {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .colorOption:hover {
-            transform: scale(1.2);
-            border-color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .colorOption.selected {
-            border-color: #FFD700;
-            border-width: 4px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-        }
-        
-        #petCustomization {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            padding: 20px;
-            border-radius: 15px;
-            z-index: 3000;
-            color: white;
-            display: none;
-            max-width: 500px;
-            width: 90%;
-        }
     </style>
 </head>
 <body>
@@ -232,102 +197,92 @@
             <div class="clickPrompt">Click to continue</div>
         </div>
         <div id="characterSelect">
-            <h1>Create Your Bird</h1>
-            <div style="background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 15px; max-width: 800px; width: 90%;">
-                <!-- Bird Preview -->
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <canvas id="birdPreview" width="200" height="200" style="border: 3px solid rgba(255, 255, 255, 0.5); border-radius: 50%; background: rgba(0, 0, 0, 0.3);"></canvas>
-                </div>
-                
-                <!-- Name Input -->
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Bird Name:</label>
-                    <input type="text" id="birdNameInput" placeholder="Enter your bird's name" maxlength="20" style="width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); color: white;">
-                </div>
-                
-                <!-- Bird Color -->
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Bird Color:</label>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                        <div class="colorOption" data-color="#FFD700" style="background: #FFD700;"></div>
-                        <div class="colorOption" data-color="#FF69B4" style="background: #FF69B4;"></div>
-                        <div class="colorOption" data-color="#228B22" style="background: #228B22;"></div>
-                        <div class="colorOption" data-color="#4169E1" style="background: #4169E1;"></div>
-                        <div class="colorOption" data-color="#FF6347" style="background: #FF6347;"></div>
-                        <div class="colorOption" data-color="#FF1493" style="background: #FF1493;"></div>
-                        <div class="colorOption" data-color="#00CED1" style="background: #00CED1;"></div>
-                        <div class="colorOption" data-color="#FFA500" style="background: #FFA500;"></div>
-                        <div class="colorOption" data-color="#9370DB" style="background: #9370DB;"></div>
-                        <div class="colorOption" data-color="#32CD32" style="background: #32CD32;"></div>
-                    </div>
-                </div>
-                
-                <!-- Hat Selection -->
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Hat:</label>
-                    <select id="hatSelect" style="width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); color: white;">
-                        <option value="none">None</option>
-                        <option value="sunhat">Sun Hat</option>
-                        <option value="tophat">Top Hat</option>
-                        <option value="cap">Baseball Cap</option>
-                        <option value="crown">Crown</option>
-                    </select>
-                </div>
-                
-                <!-- Scarf Selection -->
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Scarf:</label>
-                    <select id="scarfSelect" style="width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); color: white;">
-                        <option value="none">None</option>
-                        <option value="red">Red Scarf</option>
-                        <option value="blue">Blue Scarf</option>
-                        <option value="green">Green Scarf</option>
-                        <option value="yellow">Yellow Scarf</option>
-                        <option value="striped">Striped Scarf</option>
-                    </select>
-                </div>
-                
-                <!-- Bird Size -->
-                <div style="margin-bottom: 30px;">
-                    <label style="display: block; margin-bottom: 10px; font-size: 18px;">Size: <span id="sizeValue">30</span></label>
-                    <input type="range" id="sizeSlider" min="20" max="50" value="30" style="width: 100%;">
-                </div>
-                
-                <!-- Start Button -->
-                <button onclick="startGameWithCustomization()" style="width: 100%; padding: 15px; font-size: 20px; font-weight: bold; background: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer;">Start Game</button>
+            <h1 style="font-size: 48px; margin-bottom: 20px;">Bird World</h1>
+            <div style="display: flex; gap: 30px; margin-bottom: 40px;">
+                <button onclick="startCampaignMode()" style="padding: 20px 40px; font-size: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 3px solid #fff; border-radius: 15px; color: white; cursor: pointer; font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: all 0.3s;">
+                    🎮 CAMPAIGN MODE
+                    <div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">Epic story • 10+ hours • Rich exploration</div>
+                </button>
+                <button onclick="startSandboxMode()" style="padding: 20px 40px; font-size: 24px; background: rgba(255,255,255,0.1); border: 3px solid rgba(255,255,255,0.5); border-radius: 15px; color: white; cursor: pointer; font-weight: bold; transition: all 0.3s;">
+                    🏖️ SANDBOX MODE
+                    <div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">Free play • No objectives • Explore freely</div>
+                </button>
             </div>
+            <div id="characterOptions" style="display: none;">
+                <h2 style="margin-bottom: 30px; font-size: 32px;">Choose Your Bird</h2>
+                <div class="characterOption" onclick="selectCharacter(1)">
+                    <canvas class="characterFace" id="face1" width="150" height="150"></canvas>
+                    <h2>Brandin 🇮🇹</h2>
+                    <p>An Italian bird with intense vibes</p>
+                </div>
+                <div class="characterOption" onclick="selectCharacter(2)">
+                    <canvas class="characterFace" id="face2" width="150" height="150"></canvas>
+                    <h2>Javious Schnitzbaum 🎩✨</h2>
+                    <p>A bird with a sun hat and glitter eyelashes</p>
+                </div>
+                <div class="characterOption" onclick="selectCharacter(3)">
+                    <canvas class="characterFace" id="face3" width="150" height="150"></canvas>
+                    <h2>George Bush</h2>
+                    <p>Former president, current bird</p>
+                </div>
+                <div class="characterOption" onclick="selectCharacter(4)" style="border: 3px solid #ff00ff; background: rgba(255, 0, 255, 0.2);">
+                    <h2 style="font-size: 28px; text-shadow: 0 0 20px #ff00ff;">⚡ TECHNO MODE ⚡</h2>
+                    <p style="font-size: 16px; color: #00ffff; text-shadow: 0 0 10px #00ffff;">INTENSE VISUAL OVERLOAD</p>
+                </div>
+            </div>
+        </div>
+        <div id="campaignIntro" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1500; color: white; padding: 50px; overflow-y: auto;">
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <h1 id="campaignTitle" style="font-size: 48px; margin-bottom: 30px; text-shadow: 0 0 20px rgba(255,215,0,0.8);"></h1>
+                <div id="campaignText" style="font-size: 20px; line-height: 1.8; margin-bottom: 40px; text-align: left; background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px;"></div>
+                <button onclick="closeCampaignIntro()" style="padding: 15px 40px; font-size: 24px; background: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">Begin Your Journey</button>
+            </div>
+        </div>
+        <div id="chapterComplete" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); padding: 50px; border-radius: 20px; z-index: 2000; color: white; text-align: center; border: 4px solid #FFD700; max-width: 600px;">
+            <h1 style="font-size: 36px; margin-bottom: 20px; color: #FFD700;">Chapter Complete!</h1>
+            <div id="chapterCompleteText" style="font-size: 20px; margin-bottom: 30px; line-height: 1.6;"></div>
+            <div id="chapterRewards" style="margin-bottom: 30px;"></div>
+            <button onclick="closeChapterComplete()" style="padding: 15px 40px; font-size: 20px; background: #228B22; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">Continue</button>
         </div>
         <div id="ui">
-            <div>Score: <span id="score">0</span></div>
-            <div>Area: <span id="area">Sky</span></div>
-            <div>Seeds: <span id="seeds">0</span></div>
-            <div id="bossStatus" style="display: none; color: #ff0000; font-weight: bold;">BOSS APPEARED!</div>
-            <button id="storeBtn" onclick="toggleStore()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🛒 STORE</button>
-        </div>
-        <div id="petCustomization" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 20px; border-radius: 15px; z-index: 3000; color: white; max-width: 500px; width: 90%; border: 3px solid #FFD700;">
-            <h2 style="text-align: center; margin-bottom: 15px; color: #FFD700;">Customize Your Pet</h2>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <canvas id="petPreview" width="150" height="150" style="border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%; background: rgba(0, 0, 0, 0.3);"></canvas>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px;">Pet Name:</label>
-                <input type="text" id="petNameInput" placeholder="Pet name" maxlength="15" style="width: 100%; padding: 8px; font-size: 14px; border-radius: 5px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); color: white;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px;">Color:</label>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <div class="petColorOption" data-color="#FFD700" style="background: #FFD700; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
-                    <div class="petColorOption" data-color="#FF69B4" style="background: #FF69B4; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
-                    <div class="petColorOption" data-color="#228B22" style="background: #228B22; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
-                    <div class="petColorOption" data-color="#4169E1" style="background: #4169E1; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
-                    <div class="petColorOption" data-color="#FF6347" style="background: #FF6347; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
-                    <div class="petColorOption" data-color="#00CED1" style="background: #00CED1; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); cursor: pointer;"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <div>📅 Day <span id="day">1</span> | ⏰ <span id="time">6:00 AM</span></div>
+                    <div>🌾 Seeds: <span id="seeds">0</span> | 💰 Gold: <span id="gold">0</span></div>
+                    <div>⚡ Energy: <span id="energy">100</span>/<span id="maxEnergy">100</span></div>
+                    <div>📍 Area: <span id="area">Sky</span></div>
+                </div>
+                <div>
+                    <div>Score: <span id="score">0</span></div>
+                    <div id="bossStatus" style="display: none; color: #ff0000; font-weight: bold;">BOSS APPEARED!</div>
                 </div>
             </div>
-            <div style="display: flex; gap: 10px;">
-                <button onclick="confirmPetCustomization()" style="flex: 1; padding: 10px; background: #228B22; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Confirm</button>
-                <button onclick="cancelPetCustomization()" style="flex: 1; padding: 10px; background: #666; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Cancel</button>
+            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                <button id="storeBtn" onclick="toggleStore()" style="padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🛒 SHOP</button>
+                <button onclick="toggleInventory()" style="padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🎒 INVENTORY</button>
+                <button onclick="toggleFarming()" style="padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🌱 FARM</button>
+                <button onclick="toggleQuests()" style="padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">📜 QUESTS</button>
             </div>
+        </div>
+        <div id="inventory" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 500px; max-width: 700px; border: 3px solid #FFD700; max-height: 80vh; overflow-y: auto;">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #FFD700;">🎒 INVENTORY</h2>
+            <div id="inventoryGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px;"></div>
+            <button onclick="toggleInventory()" style="width: 100%; padding: 10px; background: #666; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Close</button>
+        </div>
+        <div id="farming" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 400px; border: 3px solid #228B22;">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #228B22;">🌱 FARMING MODE</h2>
+            <p style="margin-bottom: 15px; opacity: 0.8;">Press <strong>F</strong> to plant seeds in farm plots. Select seed type:</p>
+            <div id="seedSelection" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;"></div>
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <div>Selected: <span id="selectedSeed">None</span></div>
+                <div>Seeds in inventory: <span id="seedCount">0</span></div>
+            </div>
+            <button onclick="toggleFarming()" style="width: 100%; padding: 10px; background: #666; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Close</button>
+        </div>
+        <div id="questPanel" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 400px; max-width: 600px; border: 3px solid #FFD700;">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #FFD700;">📜 QUESTS</h2>
+            <div id="questList" style="margin-bottom: 20px;"></div>
+            <button onclick="toggleQuests()" style="width: 100%; padding: 10px; background: #666; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Close</button>
         </div>
         <div id="store" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 400px; border: 3px solid #FFD700;">
             <h2 style="text-align: center; margin-bottom: 20px; color: #FFD700;">🛒 HELPER BIRD STORE</h2>
@@ -462,178 +417,7 @@
         function skipTitleScreen() {
             document.getElementById('titleScreen').style.display = 'none';
             document.getElementById('characterSelect').style.display = 'flex';
-            initBirdCustomization();
-        }
-        
-        // Initialize bird customization menu
-        function initBirdCustomization() {
-            // Set default selected color
-            document.querySelectorAll('.colorOption')[0].classList.add('selected');
-            bird.color = '#FFD700';
-            
-            // Add color selection handlers
-            document.querySelectorAll('.colorOption').forEach(option => {
-                option.addEventListener('click', function() {
-                    document.querySelectorAll('.colorOption').forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    bird.color = this.getAttribute('data-color');
-                    updateBirdPreview();
-                });
-            });
-            
-            // Size slider handler
-            const sizeSlider = document.getElementById('sizeSlider');
-            const sizeValue = document.getElementById('sizeValue');
-            sizeSlider.addEventListener('input', function() {
-                sizeValue.textContent = this.value;
-                bird.size = parseInt(this.value);
-                updateBirdPreview();
-            });
-            
-            // Hat and scarf change handlers
-            document.getElementById('hatSelect').addEventListener('change', updateBirdPreview);
-            document.getElementById('scarfSelect').addEventListener('change', updateBirdPreview);
-            
-            // Name input handler
-            document.getElementById('birdNameInput').addEventListener('input', function() {
-                bird.name = this.value || '';
-            });
-            
-            // Initial preview
-            updateBirdPreview();
-        }
-        
-        // Update bird preview canvas
-        function updateBirdPreview() {
-            const preview = document.getElementById('birdPreview');
-            const ctx = preview.getContext('2d');
-            ctx.clearRect(0, 0, 200, 200);
-            
-            const centerX = 100;
-            const centerY = 100;
-            const size = parseInt(document.getElementById('sizeSlider').value) || 30;
-            const color = bird.color;
-            const hat = document.getElementById('hatSelect').value;
-            const scarf = document.getElementById('scarfSelect').value;
-            
-            ctx.save();
-            ctx.translate(centerX, centerY);
-            
-            // Body
-            const bodyGradient = ctx.createRadialGradient(-size * 0.2, -size * 0.1, 0, 0, 0, size * 0.6);
-            bodyGradient.addColorStop(0, color);
-            bodyGradient.addColorStop(1, shadeColor(color, -30));
-            ctx.fillStyle = bodyGradient;
-            ctx.beginPath();
-            ctx.ellipse(0, 0, size * 0.6, size * 0.4, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Scarf
-            if (scarf !== 'none') {
-                let scarfColor = '#FF6347';
-                if (scarf === 'blue') scarfColor = '#4169E1';
-                else if (scarf === 'green') scarfColor = '#228B22';
-                else if (scarf === 'yellow') scarfColor = '#FFD700';
-                else if (scarf === 'striped') {
-                    // Draw striped scarf
-                    ctx.fillStyle = '#FF0000';
-                    ctx.fillRect(-size * 0.4, size * 0.1, size * 0.8, size * 0.15);
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(-size * 0.4, size * 0.15, size * 0.8, size * 0.05);
-                    ctx.fillStyle = '#0000FF';
-                    ctx.fillRect(-size * 0.4, size * 0.2, size * 0.8, size * 0.05);
-                } else {
-                    ctx.fillStyle = scarfColor;
-                    ctx.fillRect(-size * 0.4, size * 0.1, size * 0.8, size * 0.2);
-                }
-                if (scarf !== 'striped') {
-                    ctx.fillStyle = scarfColor;
-                    ctx.fillRect(-size * 0.4, size * 0.1, size * 0.8, size * 0.2);
-                }
-            }
-            
-            // Wings
-            ctx.fillStyle = shadeColor(color, 20);
-            ctx.beginPath();
-            ctx.ellipse(-size * 0.3, 0, size * 0.5, size * 0.3, 0.3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(-size * 0.3, 0, size * 0.5, size * 0.3, -0.3, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Hat
-            if (hat !== 'none') {
-                if (hat === 'sunhat') {
-                    const hatGradient = ctx.createRadialGradient(0, -size * 0.5, 0, 0, -size * 0.5, size * 0.6);
-                    hatGradient.addColorStop(0, '#FFF8DC');
-                    hatGradient.addColorStop(1, '#FFD700');
-                    ctx.fillStyle = hatGradient;
-                    ctx.beginPath();
-                    ctx.arc(0, -size * 0.5, size * 0.6, 0, Math.PI * 2);
-                    ctx.fill();
-                } else if (hat === 'tophat') {
-                    ctx.fillStyle = '#000';
-                    ctx.fillRect(-size * 0.3, -size * 0.8, size * 0.6, size * 0.4);
-                    ctx.fillRect(-size * 0.4, -size * 0.9, size * 0.8, size * 0.1);
-                } else if (hat === 'cap') {
-                    ctx.fillStyle = '#4169E1';
-                    ctx.beginPath();
-                    ctx.arc(0, -size * 0.4, size * 0.5, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#FF0000';
-                    ctx.fillRect(-size * 0.2, -size * 0.9, size * 0.4, size * 0.1);
-                } else if (hat === 'crown') {
-                    ctx.fillStyle = '#FFD700';
-                    ctx.beginPath();
-                    for (let i = 0; i < 5; i++) {
-                        const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
-                        const x = Math.cos(angle) * size * 0.5;
-                        const y = -size * 0.6 + Math.sin(angle) * size * 0.1;
-                        if (i === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    ctx.closePath();
-                    ctx.fill();
-                }
-            }
-            
-            // Beak
-            ctx.fillStyle = '#FF6347';
-            ctx.beginPath();
-            ctx.moveTo(size * 0.5, 0);
-            ctx.lineTo(size * 0.75, -size * 0.1);
-            ctx.lineTo(size * 0.75, size * 0.1);
-            ctx.closePath();
-            ctx.fill();
-            
-            // Eye
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(size * 0.2, -size * 0.1, 3, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.restore();
-        }
-        
-        // Start game with customization
-        function startGameWithCustomization() {
-            const nameInput = document.getElementById('birdNameInput');
-            bird.name = nameInput.value.trim() || 'Bird';
-            bird.hat = document.getElementById('hatSelect').value;
-            bird.scarf = document.getElementById('scarfSelect').value;
-            bird.size = parseInt(document.getElementById('sizeSlider').value);
-            
-            game.characterSelected = true;
-            game.characterType = 1; // Default type for custom birds
-            
-            // Hide character select screen
-            document.getElementById('characterSelect').style.display = 'none';
-            
-            // Start music
-            startMusic(1);
-            
-            // Start game loop
-            gameLoop();
+            drawCharacterFaces();
         }
 
         // Draw improved bird faces on character selection
@@ -793,6 +577,7 @@
         const game = {
             score: 0,
             seeds: 0,
+            gold: 0,
             currentArea: 'Sky',
             worldWidth: 4000,
             worldHeight: 4000,
@@ -808,8 +593,276 @@
             speedLevel: 1,
             seedMultiplier: 1,
             lastFrameTime: performance.now(),
-            frameCount: 0
+            frameCount: 0,
+            // Stardew Valley systems
+            day: 1,
+            time: 360, // Minutes since 6:00 AM (360 = 6:00 AM, 600 = 12:00 PM, 1200 = 2:00 AM next day)
+            energy: 100,
+            maxEnergy: 100,
+            inventory: {},
+            inventorySize: 20,
+            farmPlots: [],
+            selectedSeedType: null,
+            farmingMode: false,
+            npcs: [],
+            quests: [],
+            buildings: [],
+            homePosition: { x: 2000, y: 2000 },
+            // Campaign Mode Systems
+            campaignMode: false,
+            currentChapter: 0,
+            chaptersCompleted: [],
+            discoveredLocations: ['Sky'], // Starting location
+            unlockedAreas: ['Sky'],
+            npcRelationships: {},
+            collectedItems: {},
+            worldEvents: {},
+            saveData: null
         };
+        
+        // Campaign Chapters - Rich story-driven progression (10+ hours of content)
+        const campaignChapters = [
+            {
+                id: 1,
+                title: "Chapter 1: A New Beginning",
+                introText: `You awaken in the vast Skies, your wings feeling the gentle currents beneath you. The world stretches endlessly in every direction, filled with mystery and opportunity.
+
+An ancient prophecy speaks of a legendary migration - a journey that will take you across seven realms, each holding secrets of the old world. But first, you must learn to survive in this new land.
+
+Your journey begins here, among the clouds. Gather resources, make your first friend, and discover what it means to be truly free.`,
+                objectives: [
+                    { id: 'collect_50_seeds', type: 'collect', target: 50, progress: 0, description: 'Collect 50 seeds to establish your first nest' },
+                    { id: 'explore_sky', type: 'explore', target: 'Sky', progress: 0, description: 'Explore the Sky region thoroughly' },
+                    { id: 'meet_wise_owl', type: 'npc', target: 'WiseOwl', progress: 0, description: 'Find and speak with the Wise Owl' }
+                ],
+                rewards: { gold: 100, seeds: 50, unlockArea: 'Forest' },
+                estimatedTime: '2-3 hours'
+            },
+            {
+                id: 2,
+                title: "Chapter 2: Into the Green",
+                introText: `The Forest calls to you - a realm of towering trees and hidden secrets. The Wise Owl has spoken of a great imbalance here, where ancient spirits have been disturbed.
+
+As you enter this verdant world, you feel the weight of ancient magic. Something is wrong here, and you're the only one who can restore the balance.`,
+                objectives: [
+                    { id: 'restore_sacred_tree', type: 'quest', target: 'sacred_tree', progress: 0, description: 'Restore the Sacred Tree in the Forest' },
+                    { id: 'befriend_forest_guardian', type: 'npc', target: 'ForestGuardian', progress: 0, description: 'Gain the trust of the Forest Guardian' },
+                    { id: 'collect_100_seeds', type: 'collect', target: 100, progress: 0, description: 'Collect 100 seeds from forest creatures' },
+                    { id: 'discover_ancient_shrine', type: 'discover', target: 'AncientShrine', progress: 0, description: 'Discover the hidden Ancient Shrine' }
+                ],
+                rewards: { gold: 200, seeds: 100, unlockArea: 'Mountain', item: 'LeafCrown' },
+                estimatedTime: '2-3 hours'
+            },
+            {
+                id: 3,
+                title: "Chapter 3: The Mountain's Call",
+                introText: `High above the world, the Mountains hold the secrets of the ancients. The peaks pierce the clouds, and those who reach them are said to gain wisdom beyond measure.
+
+But the path is treacherous, and you'll need more than wings to succeed. The Mountain Dwellers speak of a great storm coming - one that could change everything.`,
+                objectives: [
+                    { id: 'reach_peak', type: 'reach', target: 'MountainPeak', progress: 0, description: 'Reach the highest peak of the Mountain realm' },
+                    { id: 'learn_from_elders', type: 'npc', target: 'MountainElder', progress: 0, description: 'Learn the ancient ways from the Mountain Elder' },
+                    { id: 'calm_storm', type: 'quest', target: 'calm_storm', progress: 0, description: 'Calm the gathering storm' },
+                    { id: 'collect_crystal_shards', type: 'collect', target: 25, progress: 0, description: 'Collect 25 Crystal Shards' }
+                ],
+                rewards: { gold: 300, seeds: 150, unlockArea: 'Ocean', item: 'StormFeather' },
+                estimatedTime: '2-3 hours'
+            },
+            {
+                id: 4,
+                title: "Chapter 4: Depths of Mystery",
+                introText: `The Ocean stretches to the horizon, a realm of endless waves and hidden depths. Here, the Tide Singers perform ancient rituals that keep the world in balance.
+
+But whispers speak of something stirring in the deep - a presence that hasn't been felt in millennia. You must dive into the mysteries of the ocean and uncover the truth.`,
+                objectives: [
+                    { id: 'meet_tide_singers', type: 'npc', target: 'TideSinger', progress: 0, description: 'Meet the Tide Singers of the Ocean' },
+                    { id: 'solve_ocean_riddle', type: 'quest', target: 'ocean_riddle', progress: 0, description: 'Solve the ancient Ocean Riddle' },
+                    { id: 'explore_ocean_depths', type: 'explore', target: 'Ocean', progress: 0, description: 'Explore all regions of the Ocean realm' },
+                    { id: 'collect_pearls', type: 'collect', target: 15, progress: 0, description: 'Collect 15 Pearls from the depths' }
+                ],
+                rewards: { gold: 400, seeds: 200, unlockArea: 'Desert', item: 'OceanPearl' },
+                estimatedTime: '2 hours'
+            },
+            {
+                id: 5,
+                title: "Chapter 5: The Burning Sands",
+                introText: `The Desert is a realm of extremes - scorching days and freezing nights. The Nomad Birds have survived here for generations, and they hold knowledge of the old ways.
+
+But something ancient awakens beneath the sands. The Desert holds a secret that could change everything - if you're brave enough to face it.`,
+                objectives: [
+                    { id: 'join_nomad_caravan', type: 'npc', target: 'NomadLeader', progress: 0, description: 'Join the Nomad Caravan' },
+                    { id: 'survive_desert_trial', type: 'quest', target: 'desert_trial', progress: 0, description: 'Survive the Desert Trial of Endurance' },
+                    { id: 'find_oasis', type: 'discover', target: 'HiddenOasis', progress: 0, description: 'Discover the Hidden Oasis' },
+                    { id: 'collect_desert_artifacts', type: 'collect', target: 10, progress: 0, description: 'Find 10 Desert Artifacts' }
+                ],
+                rewards: { gold: 500, seeds: 250, unlockArea: 'Volcano', item: 'DesertAmulet' },
+                estimatedTime: '2 hours'
+            },
+            {
+                id: 6,
+                title: "Chapter 6: The Forge of Creation",
+                introText: `The Volcano stands as a testament to the world's power. Here, the Fire Keepers maintain the balance between creation and destruction.
+
+The ancient texts speak of a final trial here - one that will test everything you've learned. The world's fate may rest on your wings.`,
+                objectives: [
+                    { id: 'meet_fire_keepers', type: 'npc', target: 'FireKeeper', progress: 0, description: 'Meet the Fire Keepers' },
+                    { id: 'pass_forge_trial', type: 'quest', target: 'forge_trial', progress: 0, description: 'Pass the Trial of the Forge' },
+                    { id: 'collect_lava_crystals', type: 'collect', target: 20, progress: 0, description: 'Collect 20 Lava Crystals' },
+                    { id: 'defeat_ancient_guardian', type: 'boss', target: 'AncientGuardian', progress: 0, description: 'Defeat the Ancient Guardian' }
+                ],
+                rewards: { gold: 750, seeds: 500, item: 'ForgeHeart' },
+                estimatedTime: '2-3 hours'
+            },
+            {
+                id: 7,
+                title: "Chapter 7: The Great Migration",
+                introText: `All paths have led you here. The ancient migration begins - a journey that will unite all the realms and restore the balance that has been lost for generations.
+
+You are no longer just a bird. You are a legend, a keeper of the old ways, and the hope for the future. This is your moment.`,
+                objectives: [
+                    { id: 'unite_all_realms', type: 'quest', target: 'unite_realms', progress: 0, description: 'Unite all seven realms' },
+                    { id: 'complete_great_migration', type: 'quest', target: 'great_migration', progress: 0, description: 'Complete the Great Migration' },
+                    { id: 'befriend_all_npcs', type: 'npc', target: 'all', progress: 0, description: 'Befriend all major NPCs' },
+                    { id: 'restore_balance', type: 'quest', target: 'restore_balance', progress: 0, description: 'Restore the ancient balance' }
+                ],
+                rewards: { gold: 1000, seeds: 1000, item: 'LegendaryFeather', achievement: 'LegendaryBird' },
+                estimatedTime: '3-4 hours'
+            }
+        ];
+        
+        // NPCs with schedules, dialogue, and storylines
+        const campaignNPCs = [
+            {
+                id: 'WiseOwl',
+                name: 'Wise Owl',
+                area: 'Sky',
+                x: 500,
+                y: 300,
+                color: '#654321',
+                dialogue: {
+                    intro: "Ah, a new traveler! I've been waiting for you. The ancient prophecy speaks of one who will unite the realms. Could it be you?",
+                    quest: "To begin your journey, you must first learn the ways of survival. Collect seeds, explore our world, and return when you're ready.",
+                    friendship: {
+                        0: "We are just acquaintances, young one.",
+                        1: "I see promise in you. Continue on your path.",
+                        2: "You're growing wiser with each step.",
+                        3: "You've become a true friend. The realm is lucky to have you."
+                    }
+                },
+                schedule: { morning: { x: 500, y: 300 }, evening: { x: 500, y: 300 } },
+                friendshipLevel: 0
+            },
+            {
+                id: 'ForestGuardian',
+                name: 'Forest Guardian',
+                area: 'Forest',
+                x: 1200,
+                y: 800,
+                color: '#228B22',
+                dialogue: {
+                    intro: "The forest has felt your approach. Many come seeking its secrets, but few are worthy.",
+                    quest: "The Sacred Tree has been corrupted. Gather 50 purified seeds and bring them to me at the tree's base.",
+                    friendship: {
+                        0: "You are a stranger to the forest.",
+                        1: "I'm beginning to trust you, outsider.",
+                        2: "You have proven yourself to the forest.",
+                        3: "You are now a guardian of the forest yourself."
+                    }
+                },
+                schedule: { morning: { x: 1200, y: 800 }, evening: { x: 1100, y: 700 } },
+                friendshipLevel: 0
+            },
+            {
+                id: 'MountainElder',
+                name: 'Mountain Elder',
+                area: 'Mountain',
+                x: 2400,
+                y: 200,
+                color: '#8B7355',
+                dialogue: {
+                    intro: "Few dare to reach these heights. You have determination, young one. That is good.",
+                    quest: "The storm gathering above us is unnatural. I need you to collect 25 Crystal Shards to perform the Calming Ritual.",
+                    friendship: {
+                        0: "We shall see if you're worthy of these peaks.",
+                        1: "You show respect for the mountain's ways.",
+                        2: "The peaks have accepted you as one of their own.",
+                        3: "You are now a true child of the mountain."
+                    }
+                },
+                schedule: { morning: { x: 2400, y: 200 }, evening: { x: 2300, y: 150 } },
+                friendshipLevel: 0
+            },
+            {
+                id: 'TideSinger',
+                name: 'Tide Singer',
+                area: 'Ocean',
+                x: 700,
+                y: 2300,
+                color: '#1E90FF',
+                dialogue: {
+                    intro: "The ocean welcomes you, traveler. Listen closely, and you may hear the ancient songs.",
+                    quest: "The Ocean Riddle has confounded many. Find the three hidden conch shells, and the answer will reveal itself.",
+                    friendship: {
+                        0: "The ocean is vast, and you are but a drop.",
+                        1: "You're learning to hear the ocean's song.",
+                        2: "The tides respond to your presence now.",
+                        3: "You sing with the ocean itself."
+                    }
+                },
+                schedule: { morning: { x: 700, y: 2300 }, evening: { x: 800, y: 2400 } },
+                friendshipLevel: 0
+            },
+            {
+                id: 'NomadLeader',
+                name: 'Nomad Leader',
+                area: 'Desert',
+                x: 3200,
+                y: 1700,
+                color: '#EDC9AF',
+                dialogue: {
+                    intro: "The desert teaches patience and strength. Welcome to our caravan, stranger.",
+                    quest: "To join our caravan, you must survive the Trial of Endurance. Find the Hidden Oasis and return with proof.",
+                    friendship: {
+                        0: "You're not yet one of us.",
+                        1: "You show the resilience of a true nomad.",
+                        2: "The desert has accepted you.",
+                        3: "You are family now, caravan-brother."
+                    }
+                },
+                schedule: { morning: { x: 3200, y: 1700 }, evening: { x: 3100, y: 1800 } },
+                friendshipLevel: 0
+            },
+            {
+                id: 'FireKeeper',
+                name: 'Fire Keeper',
+                area: 'Volcano',
+                x: 3600,
+                y: 600,
+                color: '#FF4500',
+                dialogue: {
+                    intro: "The flames recognize you, traveler. Few can withstand the heat of the forge.",
+                    quest: "The Ancient Guardian sleeps below. To awaken it, you must prove yourself in the Trial of the Forge.",
+                    friendship: {
+                        0: "The fire tests all who approach.",
+                        1: "You've earned the respect of the flames.",
+                        2: "The forge recognizes you as its master.",
+                        3: "You are fire itself, reborn."
+                    }
+                },
+                schedule: { morning: { x: 3600, y: 600 }, evening: { x: 3600, y: 600 } },
+                friendshipLevel: 0
+            }
+        ];
+        
+        // Initialize NPCs in game
+        function initializeCampaignNPCs() {
+            game.npcs = campaignNPCs.map(npc => ({
+                ...npc,
+                currentDialogue: 0,
+                questGiven: false,
+                questCompleted: false
+            }));
+        }
 
         // Speech bubbles
         const speechBubbles = [];
@@ -846,14 +899,8 @@
             angle: 0,
             color: '#FFD700',
             wingPhase: 0,
-            characterType: 1,
-            name: '',
-            hat: 'none',
-            scarf: 'none'
+            characterType: 1
         };
-        
-        // Current pet customization state (when buying)
-        let pendingPetCustomization = null;
 
         // Helper Bird System
         function getHelperBirdCost(type) {
@@ -901,87 +948,8 @@
         function buyHelperBird(type) {
             const cost = getHelperBirdCost(type);
             if (game.seeds >= cost) {
-                // Store the purchase info and show customization modal
-                pendingPetCustomization = {
-                    type: type,
-                    cost: cost
-                };
-                
-                // Reset pet customization UI
-                document.getElementById('petNameInput').value = '';
-                document.querySelectorAll('.petColorOption').forEach(opt => opt.classList.remove('selected'));
-                document.querySelectorAll('.petColorOption')[0].classList.add('selected');
-                
-                // Show pet customization modal
-                document.getElementById('petCustomization').style.display = 'block';
-                updatePetPreview();
-            }
-        }
-        
-        function updatePetPreview() {
-            const preview = document.getElementById('petPreview');
-            const ctx = preview.getContext('2d');
-            ctx.clearRect(0, 0, 150, 150);
-            
-            const selectedColor = document.querySelector('.petColorOption.selected');
-            const color = selectedColor ? selectedColor.getAttribute('data-color') : '#FFD700';
-            
-            const centerX = 75;
-            const centerY = 75;
-            const size = 20; // Smaller for pet preview
-            
-            ctx.save();
-            ctx.translate(centerX, centerY);
-            
-            // Body
-            const bodyGradient = ctx.createRadialGradient(-size * 0.2, -size * 0.1, 0, 0, 0, size * 0.6);
-            bodyGradient.addColorStop(0, color);
-            bodyGradient.addColorStop(1, shadeColor(color, -30));
-            ctx.fillStyle = bodyGradient;
-            ctx.beginPath();
-            ctx.ellipse(0, 0, size * 0.6, size * 0.4, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Wings
-            ctx.fillStyle = shadeColor(color, 20);
-            ctx.beginPath();
-            ctx.ellipse(-size * 0.3, 0, size * 0.5, size * 0.3, 0.3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(-size * 0.3, 0, size * 0.5, size * 0.3, -0.3, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Beak
-            ctx.fillStyle = '#FF6347';
-            ctx.beginPath();
-            ctx.moveTo(size * 0.5, 0);
-            ctx.lineTo(size * 0.75, -size * 0.1);
-            ctx.lineTo(size * 0.75, size * 0.1);
-            ctx.closePath();
-            ctx.fill();
-            
-            // Eye
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(size * 0.2, -size * 0.1, 2, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.restore();
-        }
-        
-        function confirmPetCustomization() {
-            if (!pendingPetCustomization) return;
-            
-            const cost = pendingPetCustomization.cost;
-            const type = pendingPetCustomization.type;
-            
-            if (game.seeds >= cost) {
                 game.seeds -= cost;
                 game.helperBirdCounts[type]++;
-                
-                const petName = document.getElementById('petNameInput').value.trim() || 'Pet';
-                const selectedColor = document.querySelector('.petColorOption.selected');
-                const petColor = selectedColor ? selectedColor.getAttribute('data-color') : '#FFD700';
                 
                 const helperBird = {
                     type: type,
@@ -995,18 +963,17 @@
                     targetSeed: null,
                     lastCollectionTime: 0,
                     sleepPhase: 0,
-                    smallBirds: [],
-                    name: petName,
-                    color: petColor,
-                    hat: 'none',
-                    scarf: 'none'
+                    smallBirds: []
                 };
                 
                 if (type === 1) {
+                    helperBird.color = '#228B22';
                     helperBird.speed = 3;
                 } else if (type === 2) {
+                    helperBird.color = '#FF69B4';
                     helperBird.speed = 5;
                 } else if (type === 3) {
+                    helperBird.color = '#4169E1';
                     helperBird.speed = 0;
                     for (let i = 0; i < 3; i++) {
                         helperBird.smallBirds.push({
@@ -1018,7 +985,7 @@
                             angle: Math.random() * Math.PI * 2,
                             wingPhase: Math.random() * Math.PI * 2,
                             targetSeed: null,
-                            color: petColor,
+                            color: '#4169E1',
                             speed: 2,
                             hasSeed: false,
                             returning: false
@@ -1029,35 +996,8 @@
                 game.helperBirds.push(helperBird);
                 updateStoreUI();
                 document.getElementById('seeds').textContent = game.seeds;
-                
-                // Hide customization modal
-                document.getElementById('petCustomization').style.display = 'none';
-                pendingPetCustomization = null;
             }
         }
-        
-        function cancelPetCustomization() {
-            document.getElementById('petCustomization').style.display = 'none';
-            pendingPetCustomization = null;
-        }
-        
-        // Initialize pet color selection
-        document.addEventListener('DOMContentLoaded', function() {
-            // Pet color options (will be added after page loads)
-            setTimeout(() => {
-                const petColorOptions = document.querySelectorAll('.petColorOption');
-                if (petColorOptions.length > 0) {
-                    petColorOptions[0].classList.add('selected');
-                    petColorOptions.forEach(option => {
-                        option.addEventListener('click', function() {
-                            petColorOptions.forEach(opt => opt.classList.remove('selected'));
-                            this.classList.add('selected');
-                            updatePetPreview();
-                        });
-                    });
-                }
-            }, 100);
-        });
 
         function buySpeedBoost() {
             const cost = 150 * game.speedLevel;
@@ -1085,7 +1025,6 @@
         let audioContext = null;
         let musicGainNode = null;
         let musicOscillators = [];
-        let musicIntervals = []; // Track music intervals to clear them properly
 
         // Camera
         const camera = {
@@ -1106,14 +1045,12 @@
 
         // Seeds (collectibles)
         const seeds = [];
-        const SEED_RESPAWN_TIME = 5000; // 5 seconds
         function generateSeeds() {
             for (let i = 0; i < 100; i++) {
                 seeds.push({
                     x: Math.random() * game.worldWidth,
                     y: Math.random() * game.worldHeight,
                     collected: false,
-                    collectedTime: 0,
                     size: 8,
                     color: '#8B4513',
                     pulse: Math.random() * Math.PI * 2
@@ -1121,15 +1058,6 @@
             }
         }
         generateSeeds();
-        
-        function respawnSeed(seed) {
-            // Respawn in a random location
-            seed.x = Math.random() * game.worldWidth;
-            seed.y = Math.random() * game.worldHeight;
-            seed.collected = false;
-            seed.collectedTime = 0;
-            seed.pulse = Math.random() * Math.PI * 2;
-        }
 
         // Clouds
         const clouds = [];
@@ -1262,42 +1190,6 @@
             // Initial boss speech
             addSpeechBubble("I'm in your walls", boss.x, boss.y - 60);
         }
-        
-        function bossDefeated() {
-            // Drop TONS of seeds at boss location
-            const seedDropCount = 100; // A ton of seeds!
-            for (let i = 0; i < seedDropCount; i++) {
-                const angle = (Math.PI * 2 * i) / seedDropCount;
-                const distance = 50 + Math.random() * 100;
-                seeds.push({
-                    x: boss.x + Math.cos(angle) * distance,
-                    y: boss.y + Math.sin(angle) * distance,
-                    collected: false,
-                    size: 8,
-                    color: '#8B4513',
-                    pulse: Math.random() * Math.PI * 2
-                });
-            }
-            
-            // Stop boss music and clear intervals
-            stopMusic();
-            clearAllMusicIntervals();
-            
-            // Resume normal music
-            startMusic(game.characterType);
-            
-            // Hide boss UI
-            document.getElementById('bossStatus').style.display = 'none';
-            document.getElementById('bossInstructions').style.display = 'none';
-            
-            // Victory message
-            addSpeechBubble("BOSS DEFEATED! Seeds everywhere!", bird.x, bird.y - 40);
-        }
-        
-        function clearAllMusicIntervals() {
-            musicIntervals.forEach(interval => clearInterval(interval));
-            musicIntervals = [];
-        }
 
         function shootBullet() {
             // Shoot in direction bird is facing
@@ -1423,39 +1315,99 @@
                     // Increased collection range for better feel
                     if (dist < bird.size + seed.size + 5) {
                         seed.collected = true;
-                        seed.collectedTime = Date.now();
                         game.seeds += game.seedMultiplier;
                         game.score += 10 * game.seedMultiplier;
                         // Add speech bubble
                         const speechText = getSpeechText(bird.characterType);
                         addSpeechBubble(speechText);
                         
-                        // Spawn boss after 50 seeds (more challenging)
-                        if (game.seeds >= 50 && !game.bossSpawned) {
+                        // Campaign mode: Track seed collection objectives
+                        if (game.campaignMode && game.quests) {
+                            game.quests.forEach(quest => {
+                                if (quest.type === 'collect' && quest.id.includes('seed')) {
+                                    quest.progress++;
+                                }
+                            });
+                        }
+                        
+                        // Spawn boss after 50 seeds (more challenging) - only in sandbox
+                        if (!game.campaignMode && game.seeds >= 50 && !game.bossSpawned) {
                             spawnBoss();
                         }
                     }
                 }
-                
-                // Progressive respawn logic
-                if (seed.collected && seed.collectedTime > 0) {
-                    const timeSinceCollected = Date.now() - seed.collectedTime;
-                    if (timeSinceCollected >= SEED_RESPAWN_TIME) {
-                        respawnSeed(seed);
-                    }
-                } else {
-                    seed.pulse += 0.1;
-                }
+                seed.pulse += 0.1;
             });
 
             // Update current area
             const currentArea = getCurrentArea();
             game.currentArea = currentArea.name;
+            
+            // Campaign mode: Track area discovery
+            if (game.campaignMode) {
+                if (!game.discoveredLocations.includes(currentArea.name)) {
+                    game.discoveredLocations.push(currentArea.name);
+                    addSpeechBubble(`Discovered: ${currentArea.name}!`, bird.x, bird.y - 40);
+                }
+                
+                // Track exploration objectives
+                if (game.quests) {
+                    game.quests.forEach(quest => {
+                        if (quest.type === 'explore' && quest.target === currentArea.name && quest.progress === 0) {
+                            quest.progress = 1;
+                        }
+                    });
+                }
+            }
+            
+            // Campaign mode: Check for NPC interactions
+            if (game.campaignMode && game.npcs) {
+                game.npcs.forEach(npc => {
+                    if (npc.area === currentArea.name) {
+                        const dx = bird.x - npc.x;
+                        const dy = bird.y - npc.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // Check if player is close to NPC (show interaction prompt)
+                        if (dist < 100 && !npc.interactionPromptShown) {
+                            npc.interactionPromptShown = true;
+                            addSpeechBubble('Press E to talk', bird.x, bird.y - 40);
+                        } else if (dist >= 100) {
+                            npc.interactionPromptShown = false;
+                        }
+                        
+                        // Handle E key interaction
+                        if (dist < 100 && keys['e'] && !npc.talking) {
+                            interactWithNPC(npc);
+                            npc.talking = true;
+                            setTimeout(() => { npc.talking = false; }, 1000);
+                        }
+                    }
+                });
+            }
+            
+            // Campaign mode: Check chapter objectives periodically
+            if (game.campaignMode && game.frameCount % 60 === 0) {
+                checkChapterObjectives();
+            }
 
             // Update UI
             document.getElementById('score').textContent = game.score;
             document.getElementById('seeds').textContent = game.seeds;
             document.getElementById('area').textContent = game.currentArea;
+            if (game.campaignMode) {
+                document.getElementById('day').textContent = game.currentChapter;
+                const chapter = campaignChapters[game.currentChapter - 1];
+                if (chapter) {
+                    document.getElementById('time').textContent = chapter.title;
+                }
+                document.getElementById('gold').textContent = game.gold;
+                document.getElementById('energy').textContent = game.energy;
+                document.getElementById('maxEnergy').textContent = game.maxEnergy;
+            }
+            
+            // Increment frame count for campaign checks
+            game.frameCount++;
 
             // Wing animation - faster for more dynamic feel
             bird.wingPhase += 0.5;
@@ -1518,7 +1470,11 @@
                         bullets.splice(i, 1);
                         if (boss.health <= 0) {
                             game.bossActive = false;
-                            bossDefeated();
+                            stopMusic();
+                            startMusic(game.characterType); // Resume normal music
+                            // Hide boss UI
+                            document.getElementById('bossStatus').style.display = 'none';
+                            document.getElementById('bossInstructions').style.display = 'none';
                         }
                     }
                 }
@@ -1565,149 +1521,6 @@
                 }
             }
 
-            // Update helper birds - follow player in radius while seeking seeds
-            const followRadius = 300; // How far they can stray from player
-            game.helperBirds.forEach(helperBird => {
-                // Calculate distance to player
-                const dxToPlayer = bird.x - helperBird.x;
-                const dyToPlayer = bird.y - helperBird.y;
-                const distToPlayer = Math.sqrt(dxToPlayer * dxToPlayer + dyToPlayer * dyToPlayer);
-                
-                // Find nearest uncollected seed within follow radius
-                let nearestSeed = null;
-                let nearestSeedDist = followRadius * 1.5; // Can seek seeds slightly outside radius
-                
-                seeds.forEach(seed => {
-                    if (!seed.collected) {
-                        const dx = seed.x - helperBird.x;
-                        const dy = seed.y - helperBird.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        const distToPlayerFromSeed = Math.sqrt((seed.x - bird.x) ** 2 + (seed.y - bird.y) ** 2);
-                        
-                        // Only consider seeds within follow radius of player
-                        if (dist < nearestSeedDist && distToPlayerFromSeed < followRadius * 1.5) {
-                            nearestSeed = seed;
-                            nearestSeedDist = dist;
-                        }
-                    }
-                });
-                
-                let targetX, targetY;
-                
-                if (nearestSeed && nearestSeedDist < 200) {
-                    // Seek seed if close enough
-                    targetX = nearestSeed.x;
-                    targetY = nearestSeed.y;
-                } else {
-                    // Follow player - maintain distance in a radius around player
-                    const idealDistance = 80 + (helperBird.type === 2 ? Math.random() * 50 : 0); // Javious is chaotic
-                    const idealAngle = Math.random() * Math.PI * 2; // Random angle around player
-                    
-                    targetX = bird.x + Math.cos(idealAngle) * idealDistance;
-                    targetY = bird.y + Math.sin(idealAngle) * idealDistance;
-                    
-                    // If too far from player, move closer
-                    if (distToPlayer > followRadius) {
-                        targetX = bird.x + (dxToPlayer / distToPlayer) * (followRadius * 0.8);
-                        targetY = bird.y + (dyToPlayer / distToPlayer) * (followRadius * 0.8);
-                    }
-                }
-                
-                // Move towards target
-                const dx = targetX - helperBird.x;
-                const dy = targetY - helperBird.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                
-                if (dist > 5) {
-                    // Normal movement for types 1 and 2
-                    if (helperBird.type !== 3) {
-                        helperBird.vx = (dx / dist) * helperBird.speed;
-                        helperBird.vy = (dy / dist) * helperBird.speed;
-                        
-                        // Javious (type 2) gets chaotic random movement
-                        if (helperBird.type === 2 && Math.random() < 0.1) {
-                            helperBird.vx += (Math.random() - 0.5) * 3;
-                            helperBird.vy += (Math.random() - 0.5) * 3;
-                        }
-                        
-                        helperBird.x += helperBird.vx;
-                        helperBird.y += helperBird.vy;
-                        helperBird.angle = Math.atan2(helperBird.vy, helperBird.vx);
-                        helperBird.wingPhase += 0.4;
-                        
-                        // Check seed collection for helper birds
-                        if (nearestSeed && dist < helperBird.size + nearestSeed.size + 5) {
-                            nearestSeed.collected = true;
-                            game.seeds += game.seedMultiplier;
-                            game.score += 10 * game.seedMultiplier;
-                        }
-                    } else {
-                        // George Bush (type 3) - stationary, but update small birds
-                        helperBird.sleepPhase += 0.02;
-                    }
-                }
-                
-                // Update George Bush's small birds
-                if (helperBird.type === 3) {
-                    helperBird.smallBirds.forEach((smallBird, idx) => {
-                        // Find seed for small bird
-                        let smallBirdSeed = null;
-                        let smallBirdSeedDist = 400;
-                        
-                        seeds.forEach(seed => {
-                            if (!seed.collected && !seed.targeted) {
-                                const dx = seed.x - smallBird.x;
-                                const dy = seed.y - smallBird.y;
-                                const dist = Math.sqrt(dx * dx + dy * dy);
-                                const distToPlayerFromSeed = Math.sqrt((seed.x - bird.x) ** 2 + (seed.y - bird.y) ** 2);
-                                
-                                if (dist < smallBirdSeedDist && distToPlayerFromSeed < followRadius * 2) {
-                                    smallBirdSeed = seed;
-                                    smallBirdSeedDist = dist;
-                                }
-                            }
-                        });
-                        
-                        if (smallBirdSeed) {
-                            const dx = smallBirdSeed.x - smallBird.x;
-                            const dy = smallBirdSeed.y - smallBird.y;
-                            const dist = Math.sqrt(dx * dx + dy * dy);
-                            
-                            if (dist > 5) {
-                                smallBird.vx = (dx / dist) * smallBird.speed;
-                                smallBird.vy = (dy / dist) * smallBird.speed;
-                            }
-                            
-                            // Check collection
-                            if (dist < smallBird.size + smallBirdSeed.size + 3) {
-                                smallBirdSeed.collected = true;
-                                game.seeds += game.seedMultiplier;
-                                game.score += 10 * game.seedMultiplier;
-                            }
-                        } else {
-                            // Return to George Bush
-                            const returnDx = helperBird.x - smallBird.x;
-                            const returnDy = helperBird.y - smallBird.y;
-                            const returnDist = Math.sqrt(returnDx * returnDx + returnDy * returnDy);
-                            
-                            if (returnDist > 50) {
-                                smallBird.vx = (returnDx / returnDist) * smallBird.speed * 0.5;
-                                smallBird.vy = (returnDy / returnDist) * smallBird.speed * 0.5;
-                            }
-                        }
-                        
-                        smallBird.x += smallBird.vx;
-                        smallBird.y += smallBird.vy;
-                        smallBird.angle = Math.atan2(smallBird.vy, smallBird.vx);
-                        smallBird.wingPhase += 0.5;
-                    });
-                }
-                
-                // Keep helper birds in world bounds
-                helperBird.x = Math.max(helperBird.size, Math.min(game.worldWidth - helperBird.size, helperBird.x));
-                helperBird.y = Math.max(helperBird.size, Math.min(game.worldHeight - helperBird.size, helperBird.y));
-            });
-
             // Update glitter particles (Techno Mode)
             if (game.technoMode) {
                 glitterParticles.forEach(particle => {
@@ -1731,6 +1544,143 @@
             }
         }
 
+        // NPC Interaction
+        function interactWithNPC(npc) {
+            // Track NPC interaction objective
+            if (game.quests) {
+                game.quests.forEach(quest => {
+                    if (quest.type === 'npc' && (quest.target === npc.id || quest.target === 'all')) {
+                        if (quest.progress === 0) quest.progress = 1;
+                    }
+                });
+            }
+            
+            // Show dialogue
+            let dialogue = '';
+            if (!npc.questGiven) {
+                dialogue = npc.dialogue.intro + '\n\n' + npc.dialogue.quest;
+                npc.questGiven = true;
+            } else if (!npc.questCompleted) {
+                dialogue = npc.dialogue.quest;
+            } else {
+                const friendshipKey = Math.min(npc.friendshipLevel || 0, 3);
+                dialogue = npc.dialogue.friendship[friendshipKey];
+            }
+            
+            // Split dialogue into multiple speech bubbles if long
+            const words = dialogue.split(' ');
+            const chunks = [];
+            let currentChunk = '';
+            words.forEach(word => {
+                if ((currentChunk + ' ' + word).length < 50) {
+                    currentChunk += (currentChunk ? ' ' : '') + word;
+                } else {
+                    chunks.push(currentChunk);
+                    currentChunk = word;
+                }
+            });
+            if (currentChunk) chunks.push(currentChunk);
+            
+            chunks.forEach((chunk, i) => {
+                setTimeout(() => {
+                    addSpeechBubble(chunk, npc.x, npc.y - 60 - i * 30);
+                }, i * 1500);
+            });
+            
+            // Increase friendship
+            if (!game.npcRelationships[npc.id]) {
+                game.npcRelationships[npc.id] = 0;
+            }
+            game.npcRelationships[npc.id] = Math.min((game.npcRelationships[npc.id] || 0) + 0.1, 3);
+            npc.friendshipLevel = Math.floor(game.npcRelationships[npc.id]);
+            
+            saveCampaignProgress();
+        }
+        
+        // Draw NPCs
+        function drawNPCs() {
+            if (!game.campaignMode || !game.npcs) return;
+            
+            game.npcs.forEach(npc => {
+                const currentArea = getCurrentArea();
+                if (npc.area !== currentArea.name) return;
+                
+                const screenX = npc.x - camera.x;
+                const screenY = npc.y - camera.y;
+                
+                // Only draw if on screen
+                if (screenX < -100 || screenX > canvas.width + 100 || 
+                    screenY < -100 || screenY > canvas.height + 100) return;
+                
+                ctx.save();
+                ctx.translate(screenX, screenY);
+                
+                // Draw NPC bird
+                const npcSize = 35;
+                
+                // Shadow
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                
+                // Body
+                const bodyGradient = ctx.createRadialGradient(-npcSize * 0.2, -npcSize * 0.1, 0, 0, 0, npcSize * 0.6);
+                bodyGradient.addColorStop(0, npc.color);
+                bodyGradient.addColorStop(1, shadeColor(npc.color, -30));
+                ctx.fillStyle = bodyGradient;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, npcSize * 0.6, npcSize * 0.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Wings
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = shadeColor(npc.color, 20);
+                ctx.beginPath();
+                ctx.ellipse(-npcSize * 0.3, 0, npcSize * 0.5, npcSize * 0.3, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(-npcSize * 0.3, 0, npcSize * 0.5, npcSize * 0.3, -0.3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Beak
+                ctx.fillStyle = '#FF6347';
+                ctx.beginPath();
+                ctx.moveTo(npcSize * 0.5, 0);
+                ctx.lineTo(npcSize * 0.75, -npcSize * 0.1);
+                ctx.lineTo(npcSize * 0.75, npcSize * 0.1);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Eye
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(npcSize * 0.2, -npcSize * 0.1, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+                
+                // Draw name label
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillText(npc.name, screenX, screenY - npcSize - 5);
+                ctx.shadowBlur = 0;
+                
+                // Draw interaction prompt if close
+                if (npc.interactionPromptShown) {
+                    ctx.fillStyle = 'rgba(255, 215, 0, 0.9)';
+                    ctx.fillRect(screenX - 60, screenY - npcSize - 30, 120, 20);
+                    ctx.fillStyle = '#000';
+                    ctx.font = '12px Arial';
+                    ctx.fillText('Press E to talk', screenX, screenY - npcSize - 17);
+                }
+            });
+        }
+        
         // Draw functions
         function drawBackground() {
             // Create smooth gradient background blending area colors
@@ -1938,68 +1888,21 @@
             ctx.ellipse(0, 0, bird.size * 0.6, bird.size * 0.4, 0, 0, Math.PI * 2);
             ctx.fill();
 
-            // Character-specific features (for old character types) or customization
+            // Character-specific features
             ctx.shadowBlur = 0; // Disable shadow for details
-            
-            // Scarf (drawn before body details)
-            if (bird.scarf && bird.scarf !== 'none') {
-                let scarfColor = '#FF6347';
-                if (bird.scarf === 'blue') scarfColor = '#4169E1';
-                else if (bird.scarf === 'green') scarfColor = '#228B22';
-                else if (bird.scarf === 'yellow') scarfColor = '#FFD700';
-                else if (bird.scarf === 'striped') {
-                    ctx.fillStyle = '#FF0000';
-                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.1, bird.size * 0.8, bird.size * 0.15);
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.15, bird.size * 0.8, bird.size * 0.05);
-                    ctx.fillStyle = '#0000FF';
-                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.2, bird.size * 0.8, bird.size * 0.05);
-                } else {
-                    ctx.fillStyle = scarfColor;
-                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.1, bird.size * 0.8, bird.size * 0.2);
-                }
-                if (bird.scarf !== 'striped') {
-                    ctx.fillStyle = scarfColor;
-                    ctx.fillRect(-bird.size * 0.4, bird.size * 0.1, bird.size * 0.8, bird.size * 0.2);
-                }
-            }
-            
-            // Hat
-            if (bird.hat && bird.hat !== 'none') {
-                if (bird.hat === 'sunhat') {
-                    const hatGradient = ctx.createRadialGradient(0, -bird.size * 0.5, 0, 0, -bird.size * 0.5, bird.size * 0.6);
-                    hatGradient.addColorStop(0, '#FFF8DC');
-                    hatGradient.addColorStop(1, '#FFD700');
-                    ctx.fillStyle = hatGradient;
-                    ctx.beginPath();
-                    ctx.arc(0, -bird.size * 0.5, bird.size * 0.6, 0, Math.PI * 2);
-                    ctx.fill();
-                } else if (bird.hat === 'tophat') {
-                    ctx.fillStyle = '#000';
-                    ctx.fillRect(-bird.size * 0.3, -bird.size * 0.8, bird.size * 0.6, bird.size * 0.4);
-                    ctx.fillRect(-bird.size * 0.4, -bird.size * 0.9, bird.size * 0.8, bird.size * 0.1);
-                } else if (bird.hat === 'cap') {
-                    ctx.fillStyle = '#4169E1';
-                    ctx.beginPath();
-                    ctx.arc(0, -bird.size * 0.4, bird.size * 0.5, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#FF0000';
-                    ctx.fillRect(-bird.size * 0.2, -bird.size * 0.9, bird.size * 0.4, bird.size * 0.1);
-                } else if (bird.hat === 'crown') {
-                    ctx.fillStyle = '#FFD700';
-                    ctx.beginPath();
-                    for (let i = 0; i < 5; i++) {
-                        const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
-                        const x = Math.cos(angle) * bird.size * 0.5;
-                        const y = -bird.size * 0.6 + Math.sin(angle) * bird.size * 0.1;
-                        if (i === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    ctx.closePath();
-                    ctx.fill();
-                }
+            if (bird.characterType === 1) {
+                // Brandin - Italian bird (green, white, red stripes)
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(-bird.size * 0.5, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
+                ctx.fillStyle = '#CE2B37';
+                ctx.fillRect(-bird.size * 0.15, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
+                // Add outline for better visibility
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.stroke();
             } else if (bird.characterType === 2) {
-                // Javious - Sun hat (old character)
+                // Javious - Sun hat and glitter eyelashes
+                // Sun hat with gradient
                 const hatGradient = ctx.createRadialGradient(0, -bird.size * 0.5, 0, 0, -bird.size * 0.5, bird.size * 0.6);
                 hatGradient.addColorStop(0, '#FFF8DC');
                 hatGradient.addColorStop(1, '#FFD700');
@@ -2010,15 +1913,22 @@
                 // Hat band
                 ctx.fillStyle = '#FF1493';
                 ctx.fillRect(-bird.size * 0.45, -bird.size * 0.55, bird.size * 0.9, bird.size * 0.1);
-            } else if (bird.characterType === 1) {
-                // Brandin - Italian bird (green, white, red stripes)
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(-bird.size * 0.5, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
-                ctx.fillStyle = '#CE2B37';
-                ctx.fillRect(-bird.size * 0.15, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 1;
-                ctx.stroke();
+                // Glitter eyelashes
+                ctx.strokeStyle = '#FF1493';
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = '#FF1493';
+                for (let i = 0; i < 4; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(bird.size * 0.25, -bird.size * 0.05);
+                    ctx.lineTo(bird.size * 0.3 + i * 1.5, -bird.size * 0.12 - i * 1.5);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(-bird.size * 0.25, -bird.size * 0.05);
+                    ctx.lineTo(-bird.size * 0.3 - i * 1.5, -bird.size * 0.12 - i * 1.5);
+                    ctx.stroke();
+                }
+                ctx.shadowBlur = 0;
             } else if (bird.characterType === 3) {
                 // George Bush - Presidential bird (tie and suit)
                 ctx.fillStyle = '#000080';
@@ -2075,20 +1985,6 @@
             ctx.fill();
 
             ctx.restore();
-            
-            // Draw bird name above bird
-            if (bird.name) {
-                ctx.save();
-                ctx.globalAlpha = 0.7; // Semi-opaque
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 14px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'bottom';
-                ctx.shadowBlur = 4;
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-                ctx.fillText(bird.name, screenX, screenY - bird.size - 10);
-                ctx.restore();
-            }
         }
         
         // Helper function to shade colors
@@ -2235,138 +2131,6 @@
                 }
             });
         }
-        
-        function drawHelperBirds() {
-            game.helperBirds.forEach(helperBird => {
-                const screenX = helperBird.x - camera.x;
-                const screenY = helperBird.y - camera.y;
-                
-                // Only draw if on screen
-                if (screenX < -50 || screenX > canvas.width + 50 || 
-                    screenY < -50 || screenY > canvas.height + 50) return;
-                
-                ctx.save();
-                ctx.translate(screenX, screenY);
-                ctx.rotate(helperBird.angle);
-                
-                // Body with gradient - use custom color if available
-                const birdColor = helperBird.color || (helperBird.type === 1 ? '#228B22' : helperBird.type === 2 ? '#FF69B4' : '#4169E1');
-                const bodyGradient = ctx.createRadialGradient(-helperBird.size * 0.2, -helperBird.size * 0.1, 0, 0, 0, helperBird.size * 0.6);
-                bodyGradient.addColorStop(0, birdColor);
-                bodyGradient.addColorStop(1, shadeColor(birdColor, -30));
-                ctx.fillStyle = bodyGradient;
-                ctx.beginPath();
-                ctx.ellipse(0, 0, helperBird.size * 0.6, helperBird.size * 0.4, 0, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Wings
-                const wingAngle = Math.sin(helperBird.wingPhase) * 0.5;
-                ctx.fillStyle = shadeColor(birdColor, 20);
-                ctx.beginPath();
-                ctx.ellipse(-helperBird.size * 0.3, 0, helperBird.size * 0.5, helperBird.size * 0.3, wingAngle, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.ellipse(-helperBird.size * 0.3, 0, helperBird.size * 0.5, helperBird.size * 0.3, -wingAngle, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Beak
-                ctx.fillStyle = '#FF6347';
-                ctx.beginPath();
-                ctx.moveTo(helperBird.size * 0.5, 0);
-                ctx.lineTo(helperBird.size * 0.75, -helperBird.size * 0.1);
-                ctx.lineTo(helperBird.size * 0.75, helperBird.size * 0.1);
-                ctx.closePath();
-                ctx.fill();
-                
-                // Eye
-                ctx.fillStyle = '#000';
-                ctx.beginPath();
-                ctx.arc(helperBird.size * 0.2, -helperBird.size * 0.1, 3, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Draw name above helper bird
-                ctx.restore();
-                
-                if (helperBird.name) {
-                    ctx.save();
-                    ctx.globalAlpha = 0.7;
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.font = 'bold 12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'bottom';
-                    ctx.shadowBlur = 4;
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-                    ctx.fillText(helperBird.name, screenX, screenY - helperBird.size - 8);
-                    ctx.restore();
-                }
-                
-                ctx.save();
-                ctx.translate(screenX, screenY);
-                ctx.rotate(helperBird.angle);
-                
-                // Character-specific features (only if no custom color or default colors)
-                const isDefaultColor = !helperBird.color || 
-                    (helperBird.type === 1 && helperBird.color === '#228B22') ||
-                    (helperBird.type === 2 && helperBird.color === '#FF69B4') ||
-                    (helperBird.type === 3 && helperBird.color === '#4169E1');
-                
-                if (isDefaultColor && helperBird.type === 1) {
-                    // Brandin - Italian stripes
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(-helperBird.size * 0.4, -helperBird.size * 0.15, helperBird.size * 0.3, helperBird.size * 0.3);
-                    ctx.fillStyle = '#CE2B37';
-                    ctx.fillRect(-helperBird.size * 0.1, -helperBird.size * 0.15, helperBird.size * 0.3, helperBird.size * 0.3);
-                } else if (isDefaultColor && helperBird.type === 2) {
-                    // Javious - Sun hat
-                    ctx.fillStyle = '#FFD700';
-                    ctx.beginPath();
-                    ctx.arc(0, -helperBird.size * 0.5, helperBird.size * 0.5, 0, Math.PI * 2);
-                    ctx.fill();
-                } else if (helperBird.type === 3) {
-                    // George Bush - Sleeping (draw z's)
-                    if (Math.sin(helperBird.sleepPhase) > 0.5) {
-                        ctx.fillStyle = '#000';
-                        ctx.font = '12px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.fillText('Z', 0, -helperBird.size * 0.6);
-                    }
-                }
-                
-                ctx.restore();
-                
-                // Draw George Bush's small birds
-                if (helperBird.type === 3) {
-                    helperBird.smallBirds.forEach(smallBird => {
-                        const smallScreenX = smallBird.x - camera.x;
-                        const smallScreenY = smallBird.y - camera.y;
-                        
-                        if (smallScreenX > -30 && smallScreenX < canvas.width + 30 && 
-                            smallScreenY > -30 && smallScreenY < canvas.height + 30) {
-                            ctx.save();
-                            ctx.translate(smallScreenX, smallScreenY);
-                            ctx.rotate(smallBird.angle);
-                            
-                            ctx.fillStyle = smallBird.color;
-                            ctx.beginPath();
-                            ctx.ellipse(0, 0, smallBird.size * 0.6, smallBird.size * 0.4, 0, 0, Math.PI * 2);
-                            ctx.fill();
-                            
-                            // Wings
-                            const smallWingAngle = Math.sin(smallBird.wingPhase) * 0.5;
-                            ctx.fillStyle = shadeColor(smallBird.color, 20);
-                            ctx.beginPath();
-                            ctx.ellipse(-smallBird.size * 0.3, 0, smallBird.size * 0.4, smallBird.size * 0.25, smallWingAngle, 0, Math.PI * 2);
-                            ctx.fill();
-                            ctx.beginPath();
-                            ctx.ellipse(-smallBird.size * 0.3, 0, smallBird.size * 0.4, smallBird.size * 0.25, -smallWingAngle, 0, Math.PI * 2);
-                            ctx.fill();
-                            
-                            ctx.restore();
-                        }
-                    });
-                }
-            });
-        }
 
         function drawGlitter() {
             if (!game.technoMode) return;
@@ -2505,6 +2269,288 @@
             minimapCtx.fill();
         }
 
+        // Campaign Mode Functions
+        function startCampaignMode() {
+            game.campaignMode = true;
+            document.getElementById('characterOptions').style.display = 'flex';
+            // Load save if exists
+            loadCampaignSave();
+        }
+        
+        function startSandboxMode() {
+            game.campaignMode = false;
+            document.getElementById('characterOptions').style.display = 'flex';
+        }
+        
+        function loadCampaignSave() {
+            const saveData = localStorage.getItem('birdWorldCampaign');
+            if (saveData) {
+                try {
+                    const parsed = JSON.parse(saveData);
+                    game.currentChapter = parsed.currentChapter || 1;
+                    game.chaptersCompleted = parsed.chaptersCompleted || [];
+                    game.discoveredLocations = parsed.discoveredLocations || ['Sky'];
+                    game.unlockedAreas = parsed.unlockedAreas || ['Sky'];
+                    game.npcRelationships = parsed.npcRelationships || {};
+                    game.collectedItems = parsed.collectedItems || {};
+                    game.worldEvents = parsed.worldEvents || {};
+                    game.seeds = parsed.seeds || 0;
+                    game.gold = parsed.gold || 0;
+                    game.score = parsed.score || 0;
+                } catch(e) {
+                    console.log('Save data corrupted, starting fresh');
+                }
+            }
+        }
+        
+        function saveCampaignProgress() {
+            if (!game.campaignMode) return;
+            const saveData = {
+                currentChapter: game.currentChapter,
+                chaptersCompleted: game.chaptersCompleted,
+                discoveredLocations: game.discoveredLocations,
+                unlockedAreas: game.unlockedAreas,
+                npcRelationships: game.npcRelationships,
+                collectedItems: game.collectedItems,
+                worldEvents: game.worldEvents,
+                seeds: game.seeds,
+                gold: game.gold,
+                score: game.score,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('birdWorldCampaign', JSON.stringify(saveData));
+        }
+        
+        function startCampaignChapter(chapterNum) {
+            if (chapterNum < 1 || chapterNum > campaignChapters.length) return;
+            
+            const chapter = campaignChapters[chapterNum - 1];
+            game.currentChapter = chapterNum;
+            
+            // Show intro
+            document.getElementById('campaignTitle').textContent = chapter.title;
+            document.getElementById('campaignText').innerHTML = `
+                <p style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #FFD700;">${chapter.title}</p>
+                <p style="white-space: pre-line; margin-bottom: 20px;">${chapter.introText}</p>
+                <div style="margin-top: 30px; padding: 20px; background: rgba(255,215,0,0.1); border-radius: 10px; border: 2px solid #FFD700;">
+                    <p style="font-weight: bold; margin-bottom: 10px; color: #FFD700;">Objectives:</p>
+                    <ul style="text-align: left; margin-left: 20px;">
+                        ${chapter.objectives.map(obj => `<li style="margin: 10px 0;">${obj.description}</li>`).join('')}
+                    </ul>
+                    <p style="margin-top: 15px; font-style: italic; opacity: 0.8;">Estimated time: ${chapter.estimatedTime}</p>
+                </div>
+            `;
+            document.getElementById('campaignIntro').style.display = 'block';
+            
+            // Initialize chapter objectives
+            game.quests = chapter.objectives.map(obj => ({ ...obj }));
+            
+            // Initialize NPCs if first chapter
+            if (chapterNum === 1) {
+                initializeCampaignNPCs();
+            }
+        }
+        
+        function closeCampaignIntro() {
+            document.getElementById('campaignIntro').style.display = 'none';
+            updateCampaignUI();
+        }
+        
+        function updateCampaignUI() {
+            if (!game.campaignMode) return;
+            
+            const chapter = campaignChapters[game.currentChapter - 1];
+            if (!chapter) return;
+            
+            // Update quest panel
+            let questHTML = `
+                <div style="background: rgba(255,215,0,0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 2px solid #FFD700;">
+                    <h3 style="color: #FFD700; margin-bottom: 15px;">${chapter.title}</h3>
+            `;
+            
+            game.quests.forEach((quest, index) => {
+                const progress = quest.type === 'collect' ? Math.min(quest.progress, quest.target) : quest.progress;
+                const target = quest.type === 'collect' ? quest.target : 1;
+                const percent = quest.type === 'collect' ? Math.floor((progress / target) * 100) : (quest.progress >= target ? 100 : 0);
+                const completed = percent >= 100;
+                
+                questHTML += `
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 10px; ${completed ? 'border: 2px solid #228B22;' : ''}">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="${completed ? 'text-decoration: line-through; opacity: 0.7;' : ''}">${quest.description}</span>
+                            <span style="color: ${completed ? '#228B22' : '#FFD700'}; font-weight: bold;">${completed ? '✓' : percent + '%'}</span>
+                        </div>
+                        ${quest.type === 'collect' ? `
+                            <div style="background: rgba(0,0,0,0.3); border-radius: 5px; height: 8px; overflow: hidden;">
+                                <div style="background: ${completed ? '#228B22' : '#FFD700'}; height: 100%; width: ${percent}%; transition: width 0.3s;"></div>
+                            </div>
+                            <div style="text-align: right; font-size: 12px; margin-top: 5px; opacity: 0.8;">${progress}/${target}</div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            questHTML += '</div>';
+            document.getElementById('questList').innerHTML = questHTML;
+            
+            saveCampaignProgress();
+        }
+        
+        function checkChapterObjectives() {
+            if (!game.campaignMode) return;
+            
+            const chapter = campaignChapters[game.currentChapter - 1];
+            if (!chapter) return;
+            
+            let allComplete = true;
+            
+            game.quests.forEach(quest => {
+                if (quest.progress < (quest.type === 'collect' ? quest.target : 1)) {
+                    allComplete = false;
+                }
+            });
+            
+            if (allComplete) {
+                completeChapter(game.currentChapter);
+            }
+        }
+        
+        function completeChapter(chapterNum) {
+            const chapter = campaignChapters[chapterNum - 1];
+            if (!chapter) return;
+            
+            // Mark as completed
+            if (!game.chaptersCompleted.includes(chapterNum)) {
+                game.chaptersCompleted.push(chapterNum);
+            }
+            
+            // Give rewards
+            if (chapter.rewards.gold) game.gold += chapter.rewards.gold;
+            if (chapter.rewards.seeds) game.seeds += chapter.rewards.seeds;
+            if (chapter.rewards.unlockArea) {
+                if (!game.unlockedAreas.includes(chapter.rewards.unlockArea)) {
+                    game.unlockedAreas.push(chapter.rewards.unlockArea);
+                }
+            }
+            if (chapter.rewards.item) {
+                addItemToInventory(chapter.rewards.item, 1);
+            }
+            
+            // Show completion screen
+            let rewardText = '';
+            if (chapter.rewards.gold) rewardText += `<div>💰 ${chapter.rewards.gold} Gold</div>`;
+            if (chapter.rewards.seeds) rewardText += `<div>🌾 ${chapter.rewards.seeds} Seeds</div>`;
+            if (chapter.rewards.unlockArea) rewardText += `<div>🔓 ${chapter.rewards.unlockArea} Unlocked!</div>`;
+            if (chapter.rewards.item) rewardText += `<div>🎁 ${chapter.rewards.item}</div>`;
+            if (chapter.rewards.achievement) rewardText += `<div style="color: #FFD700; font-weight: bold;">🏆 Achievement: ${chapter.rewards.achievement}</div>`;
+            
+            document.getElementById('chapterCompleteText').innerHTML = `
+                <p>Congratulations! You've completed ${chapter.title}!</p>
+                <p style="margin-top: 15px; font-size: 18px;">Rewards:</p>
+            `;
+            document.getElementById('chapterRewards').innerHTML = rewardText;
+            document.getElementById('chapterComplete').style.display = 'block';
+            
+            // Move to next chapter
+            game.currentChapter++;
+            
+            saveCampaignProgress();
+        }
+        
+        function closeChapterComplete() {
+            document.getElementById('chapterComplete').style.display = 'none';
+            
+            // Start next chapter if available
+            if (game.currentChapter <= campaignChapters.length) {
+                startCampaignChapter(game.currentChapter);
+            } else {
+                // Campaign complete!
+                showCampaignComplete();
+            }
+        }
+        
+        function showCampaignComplete() {
+            document.getElementById('campaignTitle').textContent = 'Campaign Complete!';
+            document.getElementById('campaignText').innerHTML = `
+                <p style="font-size: 28px; color: #FFD700; margin-bottom: 20px;">🎉 Congratulations! 🎉</p>
+                <p style="font-size: 20px; margin-bottom: 20px;">You have completed the legendary migration and united all seven realms!</p>
+                <p style="margin-bottom: 20px;">Your journey may be over, but the world is yours to explore. Continue your adventures, befriend all the NPCs, and discover every secret the world has to offer.</p>
+                <div style="background: rgba(255,215,0,0.2); padding: 20px; border-radius: 10px; margin-top: 30px;">
+                    <p style="font-weight: bold; color: #FFD700;">Final Statistics:</p>
+                    <p>💰 Total Gold: ${game.gold}</p>
+                    <p>🌾 Total Seeds: ${game.seeds}</p>
+                    <p>📍 Locations Discovered: ${game.discoveredLocations.length}</p>
+                    <p>👥 NPCs Befriended: ${Object.keys(game.npcRelationships).length}</p>
+                </div>
+            `;
+            document.getElementById('campaignIntro').style.display = 'block';
+        }
+        
+        function addItemToInventory(itemId, quantity) {
+            if (!game.inventory[itemId]) {
+                game.inventory[itemId] = 0;
+            }
+            game.inventory[itemId] += quantity;
+            updateInventoryUI();
+        }
+        
+        function updateInventoryUI() {
+            const grid = document.getElementById('inventoryGrid');
+            grid.innerHTML = '';
+            
+            const itemCount = Object.keys(game.inventory).length;
+            for (let i = 0; i < game.inventorySize; i++) {
+                const slot = document.createElement('div');
+                slot.style.cssText = 'width: 80px; height: 80px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;';
+                
+                if (i < itemCount) {
+                    const itemId = Object.keys(game.inventory)[i];
+                    const quantity = game.inventory[itemId];
+                    slot.innerHTML = `<div style="font-size: 24px;">${getItemIcon(itemId)}</div><div style="font-size: 12px;">${quantity}</div>`;
+                    slot.title = itemId;
+                }
+                
+                grid.appendChild(slot);
+            }
+        }
+        
+        function getItemIcon(itemId) {
+            const icons = {
+                'LeafCrown': '👑',
+                'StormFeather': '⚡',
+                'OceanPearl': '💎',
+                'DesertAmulet': '🔮',
+                'ForgeHeart': '❤️',
+                'LegendaryFeather': '✨'
+            };
+            return icons[itemId] || '📦';
+        }
+        
+        function toggleInventory() {
+            const inv = document.getElementById('inventory');
+            if (inv.style.display === 'none') {
+                inv.style.display = 'block';
+                updateInventoryUI();
+            } else {
+                inv.style.display = 'none';
+            }
+        }
+        
+        function toggleFarming() {
+            const farm = document.getElementById('farming');
+            farm.style.display = farm.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function toggleQuests() {
+            const quests = document.getElementById('questPanel');
+            if (quests.style.display === 'none') {
+                quests.style.display = 'block';
+                updateCampaignUI();
+            } else {
+                quests.style.display = 'none';
+            }
+        }
+        
         // Character selection
         function selectCharacter(type) {
             game.characterSelected = true;
@@ -2532,6 +2578,11 @@
             
             // Start music
             startMusic(type);
+            
+            // Start campaign if in campaign mode
+            if (game.campaignMode) {
+                startCampaignChapter(game.currentChapter || 1);
+            }
             
             // Start game loop
             gameLoop();
@@ -2584,8 +2635,6 @@
                 try { osc.stop(); } catch(e) {}
             });
             musicOscillators = [];
-            // Clear all music intervals
-            clearAllMusicIntervals();
         }
 
         function playIntenseMusic() {
@@ -2617,8 +2666,7 @@
                 noteIndex = (noteIndex + 1) % notes.length;
             }
             
-            const interval = setInterval(playNote, 150);
-            musicIntervals.push(interval);
+            setInterval(playNote, 150);
         }
 
         function playReggaeMusic() {
@@ -2655,9 +2703,8 @@
                 melIndex = (melIndex + 1) % melody.length;
             }
             
-            const bassInterval = setInterval(playBass, 400);
-            const melodyInterval = setInterval(playMelody, 300);
-            musicIntervals.push(bassInterval, melodyInterval);
+            setInterval(playBass, 400);
+            setInterval(playMelody, 300);
         }
 
         function playMaryHadALittleLamb() {
@@ -2682,8 +2729,7 @@
                 noteIndex++;
             }
             
-            const interval = setInterval(playNote, 350);
-            musicIntervals.push(interval);
+            setInterval(playNote, 350);
         }
 
         function playTechnoMusic() {
@@ -2742,10 +2788,9 @@
                 osc.stop(audioContext.currentTime + 0.05);
             }
             
-            const kickInterval = setInterval(playKick, 250); // 4/4 kick
-            const synthInterval = setInterval(playSynth, 125); // Fast synth
-            const hihatInterval = setInterval(playHiHat, 125); // Fast hi-hat
-            musicIntervals.push(kickInterval, synthInterval, hihatInterval);
+            setInterval(playKick, 250); // 4/4 kick
+            setInterval(playSynth, 125); // Fast synth
+            setInterval(playHiHat, 125); // Fast hi-hat
         }
 
         function playMetalMusic() {
@@ -2805,10 +2850,9 @@
                 osc.stop(audioContext.currentTime + 0.05);
             }
             
-            const rhythmInterval = setInterval(playRhythm, 100); // Very fast, intense
-            const bassInterval = setInterval(playMetalBass, 150);
-            const drumsInterval = setInterval(playMetalDrums, 80);
-            musicIntervals.push(rhythmInterval, bassInterval, drumsInterval);
+            setInterval(playRhythm, 100); // Very fast, intense
+            setInterval(playMetalBass, 150);
+            setInterval(playMetalDrums, 80);
         }
 
         // Speech bubble system
@@ -2938,9 +2982,9 @@
             drawGlitter(); // Draw glitter particles in Techno Mode
             drawAreaMarkers();
             drawSeeds();
+            drawNPCs(); // Draw NPCs in campaign mode
             drawBoss(); // Draw boss before bullets for layering
             drawBullets();
-            drawHelperBirds(); // Draw helper birds
             drawBird();
             drawSpeechBubbles();
             
