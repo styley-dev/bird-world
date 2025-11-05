@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bird World - Explore the Skies</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        #gameContainer {
+            position: relative;
+            border: 4px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: #87CEEB;
+        }
+
+        canvas {
+            display: block;
+            background: linear-gradient(to bottom, #87CEEB 0%, #98D8C8 100%);
+        }
+
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 16px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        #minimap {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 200px;
+            height: 150px;
+            border: 2px solid white;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        #instructions {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 14px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        #titleScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            color: white;
+            cursor: pointer;
+        }
+
+        #titleScreen h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        #titleScreen h2 {
+            font-size: 28px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            opacity: 0.9;
+        }
+
+        #titleScreen h3 {
+            font-size: 24px;
+            margin-top: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-style: italic;
+            color: #FFD700;
+        }
+
+        #titleScreen .clickPrompt {
+            font-size: 18px;
+            margin-top: 60px;
+            opacity: 0.7;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.3; }
+        }
+
+        #characterSelect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+        }
+
+        #characterSelect h1 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .characterOption {
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .characterOption:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
+
+        .characterOption h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .characterOption p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .characterFace {
+            width: 150px;
+            height: 150px;
+            margin: 15px auto;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="titleScreen" onclick="skipTitleScreen()">
+            <h1>Bird World</h1>
+            <h2>A fully explorable bird world</h2>
+            <h3 id="tagline">Now with <span id="variable1"></span> <span id="variable2"></span></h3>
+            <div class="clickPrompt">Click to continue</div>
+        </div>
+        <div id="characterSelect">
+            <h1>Choose Your Bird</h1>
+            <div class="characterOption" onclick="selectCharacter(1)">
+                <canvas class="characterFace" id="face1" width="150" height="150"></canvas>
+                <h2>Brandin 🇮🇹</h2>
+                <p>An Italian bird with intense vibes</p>
+            </div>
+            <div class="characterOption" onclick="selectCharacter(2)">
+                <canvas class="characterFace" id="face2" width="150" height="150"></canvas>
+                <h2>Javious Schnitzbaum 🎩✨</h2>
+                <p>A bird with a sun hat and glitter eyelashes</p>
+            </div>
+            <div class="characterOption" onclick="selectCharacter(3)">
+                <canvas class="characterFace" id="face3" width="150" height="150"></canvas>
+                <h2>George Bush</h2>
+                <p>Former president, current bird</p>
+            </div>
+            <div class="characterOption" onclick="selectCharacter(4)" style="border: 3px solid #ff00ff; background: rgba(255, 0, 255, 0.2);">
+                <h2 style="font-size: 28px; text-shadow: 0 0 20px #ff00ff;">⚡ TECHNO MODE ⚡</h2>
+                <p style="font-size: 16px; color: #00ffff; text-shadow: 0 0 10px #00ffff;">INTENSE VISUAL OVERLOAD</p>
+            </div>
+        </div>
+        <div id="ui">
+            <div>Score: <span id="score">0</span></div>
+            <div>Area: <span id="area">Sky</span></div>
+            <div>Seeds: <span id="seeds">0</span></div>
+            <div id="bossStatus" style="display: none; color: #ff0000; font-weight: bold;">BOSS APPEARED!</div>
+            <button id="storeBtn" onclick="toggleStore()" style="margin-top: 10px; padding: 5px 10px; cursor: pointer; background: rgba(255, 255, 255, 0.3); border: 2px solid white; border-radius: 5px; color: white; font-weight: bold;">🛒 STORE</button>
+        </div>
+        <div id="store" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 15px; z-index: 2000; color: white; min-width: 400px; border: 3px solid #FFD700;">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #FFD700;">🛒 HELPER BIRD STORE</h2>
+            <div style="margin-bottom: 15px;">
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 5px;">Brandin 🇮🇹 - 100 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Effective seed targeting, normal speed</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Owned: <span id="brandinCount">0</span></span>
+                        <button onclick="buyHelperBird(1)" id="buyBrandin" style="padding: 8px 15px; background: #228B22; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Buy (<span id="brandinCost">100</span>)</button>
+                    </div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 5px;">Javious Schnitzbaum 🎩✨ - 50 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Very fast and chaotic, completely random</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Owned: <span id="javiousCount">0</span></span>
+                        <button onclick="buyHelperBird(2)" id="buyJavious" style="padding: 8px 15px; background: #FF69B4; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Buy (<span id="javiousCost">50</span>)</button>
+                    </div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 5px;">George Bush - 75 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Sends small birds to collect seeds while sleeping</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Owned: <span id="bushCount">0</span></span>
+                        <button onclick="buyHelperBird(3)" id="buyBush" style="padding: 8px 15px; background: #4169E1; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Buy (<span id="bushCost">75</span>)</button>
+                    </div>
+                </div>
+                <div style="background: rgba(255, 215, 0, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 2px solid #FFD700;">
+                    <h3 style="margin-bottom: 5px;">⚡ Speed Boost - 150 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Permanently increase player speed</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Level: <span id="speedLevel">1</span></span>
+                        <button onclick="buySpeedBoost()" id="buySpeed" style="padding: 8px 15px; background: #FFD700; border: none; border-radius: 5px; color: black; cursor: pointer; font-weight: bold;">Buy (<span id="speedCost">150</span>)</button>
+                    </div>
+                </div>
+                <div style="background: rgba(255, 0, 255, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 2px solid #FF00FF;">
+                    <h3 style="margin-bottom: 5px;">💎 Seed Multiplier - 200 seeds</h3>
+                    <p style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">Double seeds collected from each pickup</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Multiplier: <span id="multiplierLevel">1x</span></span>
+                        <button onclick="buySeedMultiplier()" id="buyMultiplier" style="padding: 8px 15px; background: #FF00FF; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Buy (<span id="multiplierCost">200</span>)</button>
+                    </div>
+                </div>
+            </div>
+            <button onclick="toggleStore()" style="width: 100%; padding: 10px; background: #666; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; margin-top: 10px;">Close Store</button>
+        </div>
+        <canvas id="minimap"></canvas>
+        <canvas id="gameCanvas"></canvas>
+        <div id="instructions">
+            <div>Arrow Keys / WASD: Move | Space: Speed Boost</div>
+            <div id="instructionsText">Explore different areas and collect seeds!</div>
+            <div id="bossInstructions" style="display: none; color: #ff0000; font-weight: bold;">BOSS FIGHT! Press Enter to shoot!</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const minimapCanvas = document.getElementById('minimap');
+        const minimapCtx = minimapCanvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = 1200;
+        canvas.height = 800;
+        
+        // Set minimap size
+        minimapCanvas.width = 200;
+        minimapCanvas.height = 150;
+
+        // Descriptive words (Variable 1) - 50+ unique complex words + physics terms
+        const descriptiveWords = [
+            'ethereal', 'hyperbolic', 'cosmetic', 'intrusive', 'serendipitous',
+            'ephemeral', 'ubiquitous', 'voracious', 'mellifluous', 'sycophantic',
+            'pernicious', 'taciturn', 'voluminous', 'pervasive', 'languid',
+            'ebullient', 'capricious', 'dilapidated', 'effervescent', 'gregarious',
+            'impervious', 'jocular', 'laconic', 'magnanimous', 'nefarious',
+            'ostentatious', 'perspicacious', 'querulous', 'rambunctious', 'sagacious',
+            'tenacious', 'vociferous', 'wistful', 'xenophobic', 'youthful',
+            'zealous', 'amorphous', 'benevolent', 'cacophonous', 'diligent',
+            'effulgent', 'fastidious', 'garrulous', 'harmonious', 'illustrious',
+            'judicious', 'kaleidoscopic', 'luminous', 'meticulous', 'nonchalant',
+            'omnipotent', 'palpable', 'quintessential', 'resilient', 'sublime',
+            'tranquil', 'unassuming', 'vivacious', 'wondrous', 'xylophonic',
+            'yearning', 'zealot', 'aesthetic', 'bucolic', 'chimerical',
+            'diaphanous', 'eclectic', 'flamboyant', 'gossamer', 'halcyon',
+            'iridescent', 'jubilant', 'kinetic', 'lissome', 'majestic',
+            'numinous', 'opulent', 'penultimate', 'quiescent', 'refulgent',
+            'thermodynamic', 'combustive', 'centrifugal', 'electromagnetic', 'oscillatory',
+            'quantum', 'relativistic', 'inertial', 'molecular', 'atmospheric',
+            'vibrational', 'rotational', 'translational', 'gravitational', 'magnetic',
+            'nuclear', 'atomic', 'photonic', 'spectroscopic', 'hydrodynamic',
+            'aerodynamic', 'isothermal', 'adiabatic', 'entropic',
+            'exothermic', 'endothermic', 'catalytic', 'mechanical', 'elastic'
+        ];
+
+        // Bird-related words (Variable 2) - 50+ unique bird terms + physics-bird terms
+        const birdWords = [
+            'feathers', 'flight', 'flapping', 'pecking', 'bird feet', 'tickle bones',
+            'beaks', 'wings', 'talons', 'plumage', 'chirping', 'twittering',
+            'nesting', 'preening', 'soaring', 'gliding', 'diving', 'hovering',
+            'roosting', 'perching', 'scavenging', 'foraging', 'migrating', 'mating',
+            'courtship', 'hatching', 'fledging', 'molting', 'beak tapping', 'wing spreading',
+            'tail fanning', 'head bobbing', 'chest puffing', 'crown raising', 'dance moves',
+            'song patterns', 'call notes', 'territorial displays', 'dust bathing', 'sunbathing',
+            'anting', 'bathing', 'preening rituals', 'bill clapping', 'wing fluttering',
+            'tail wagging', 'head tilting', 'eye blinking', 'neck stretching', 'leg lifting',
+            'toe wiggling', 'claw flexing', 'bill gaping', 'crop distending', 'gular fluttering',
+            'panting', 'shivering', 'piloerection', 'wattles', 'combs',
+            'spurs', 'rump feathers', 'wing bars', 'eye rings', 'nape patches',
+            'throat patches', 'breast bands', 'tail spots', 'wing beats', 'takeoff',
+            'landing', 'banking', 'turning', 'stooping', 'swooping',
+            'skimming', 'plunge diving', 'surface diving', 'bobbing', 'paddling',
+            'wading', 'stalking', 'pouncing', 'caching', 'cracking',
+            'shelling', 'probing', 'drilling', 'hammering', 'siphoning',
+            'aerodynamic feathers', 'thermal soaring', 'lift generation', 'drag reduction',
+            'centrifugal flight', 'momentum conservation', 'kinetic energy', 'potential energy',
+            'velocity vectors', 'acceleration patterns', 'rotational dynamics', 'orbital mechanics',
+            'pressure differentials', 'airflow dynamics', 'vortex shedding', 'boundary layers',
+            'thermodynamic efficiency', 'combustion energy', 'metabolic rates', 'energy conversion',
+            'force vectors', 'torque generation', 'angular momentum', 'fluid dynamics'
+        ];
+
+        // Initialize title screen
+        function initTitleScreen() {
+            const var1 = descriptiveWords[Math.floor(Math.random() * descriptiveWords.length)];
+            const var2 = birdWords[Math.floor(Math.random() * birdWords.length)];
+            document.getElementById('variable1').textContent = var1;
+            document.getElementById('variable2').textContent = var2;
+        }
+
+        function skipTitleScreen() {
+            document.getElementById('titleScreen').style.display = 'none';
+            document.getElementById('characterSelect').style.display = 'flex';
+            drawCharacterFaces();
+        }
+
+        // Draw improved bird faces on character selection
+        function drawCharacterFaces() {
+            // Brandin - Italian bird (improved)
+            const face1 = document.getElementById('face1');
+            const ctx1 = face1.getContext('2d');
+            // Clear canvas
+            ctx1.clearRect(0, 0, 150, 150);
+            // Body with gradient
+            const bodyGrad1 = ctx1.createRadialGradient(75, 75, 0, 75, 75, 60);
+            bodyGrad1.addColorStop(0, '#32CD32');
+            bodyGrad1.addColorStop(1, '#228B22');
+            ctx1.fillStyle = bodyGrad1;
+            ctx1.beginPath();
+            ctx1.arc(75, 75, 60, 0, Math.PI * 2);
+            ctx1.fill();
+            // Italian flag stripes
+            ctx1.fillStyle = '#FFFFFF';
+            ctx1.fillRect(30, 65, 90, 12);
+            ctx1.fillStyle = '#CE2B37';
+            ctx1.fillRect(30, 77, 90, 12);
+            // Beak
+            ctx1.fillStyle = '#FF6347';
+            ctx1.beginPath();
+            ctx1.moveTo(125, 75);
+            ctx1.lineTo(145, 68);
+            ctx1.lineTo(145, 82);
+            ctx1.closePath();
+            ctx1.fill();
+            // Eyes
+            ctx1.fillStyle = '#000';
+            ctx1.beginPath();
+            ctx1.arc(58, 68, 7, 0, Math.PI * 2);
+            ctx1.fill();
+            ctx1.beginPath();
+            ctx1.arc(92, 70, 7, 0, Math.PI * 2);
+            ctx1.fill();
+            // Eye highlights
+            ctx1.fillStyle = '#FFF';
+            ctx1.beginPath();
+            ctx1.arc(60, 69, 3, 0, Math.PI * 2);
+            ctx1.fill();
+            ctx1.beginPath();
+            ctx1.arc(94, 71, 3, 0, Math.PI * 2);
+            ctx1.fill();
+
+            // Javious - Sun hat and glitter eyelashes (improved)
+            const face2 = document.getElementById('face2');
+            const ctx2 = face2.getContext('2d');
+            ctx2.clearRect(0, 0, 150, 150);
+            // Body with gradient
+            const bodyGrad2 = ctx2.createRadialGradient(75, 75, 0, 75, 75, 65);
+            bodyGrad2.addColorStop(0, '#FFB6C1');
+            bodyGrad2.addColorStop(1, '#FF69B4');
+            ctx2.fillStyle = bodyGrad2;
+            ctx2.beginPath();
+            ctx2.arc(75, 75, 65, 0, Math.PI * 2);
+            ctx2.fill();
+            // Sun hat with gradient
+            const hatGrad = ctx2.createRadialGradient(75, 45, 0, 75, 45, 50);
+            hatGrad.addColorStop(0, '#FFF8DC');
+            hatGrad.addColorStop(1, '#FFD700');
+            ctx2.fillStyle = hatGrad;
+            ctx2.beginPath();
+            ctx2.arc(75, 45, 50, 0, Math.PI * 2);
+            ctx2.fill();
+            // Hat band
+            ctx2.fillStyle = '#FF1493';
+            ctx2.fillRect(25, 40, 100, 10);
+            // Glitter eyelashes
+            ctx2.strokeStyle = '#FF1493';
+            ctx2.lineWidth = 2;
+            ctx2.shadowBlur = 5;
+            ctx2.shadowColor = '#FF1493';
+            for (let i = 0; i < 4; i++) {
+                ctx2.beginPath();
+                ctx2.moveTo(58, 72);
+                ctx2.lineTo(48 + i * 2, 58 - i * 2);
+                ctx2.stroke();
+                ctx2.beginPath();
+                ctx2.moveTo(92, 74);
+                ctx2.lineTo(102 + i * 2, 60 - i * 2);
+                ctx2.stroke();
+            }
+            ctx2.shadowBlur = 0;
+            // Eyes
+            ctx2.fillStyle = '#000';
+            ctx2.beginPath();
+            ctx2.arc(62, 82, 5, 0, Math.PI * 2);
+            ctx2.fill();
+            ctx2.beginPath();
+            ctx2.arc(88, 84, 5, 0, Math.PI * 2);
+            ctx2.fill();
+            // Beak
+            ctx2.fillStyle = '#FF6347';
+            ctx2.beginPath();
+            ctx2.moveTo(115, 75);
+            ctx2.lineTo(135, 72);
+            ctx2.lineTo(135, 78);
+            ctx2.closePath();
+            ctx2.fill();
+
+            // George Bush - Presidential bird (improved)
+            const face3 = document.getElementById('face3');
+            const ctx3 = face3.getContext('2d');
+            ctx3.clearRect(0, 0, 150, 150);
+            // Body with gradient
+            const bodyGrad3 = ctx3.createRadialGradient(75, 75, 0, 75, 75, 60);
+            bodyGrad3.addColorStop(0, '#6495ED');
+            bodyGrad3.addColorStop(1, '#4169E1');
+            ctx3.fillStyle = bodyGrad3;
+            ctx3.beginPath();
+            ctx3.arc(75, 75, 60, 0, Math.PI * 2);
+            ctx3.fill();
+            // Suit collar
+            ctx3.fillStyle = '#000080';
+            ctx3.fillRect(45, 58, 60, 18);
+            // Tie
+            ctx3.fillStyle = '#FF0000';
+            ctx3.beginPath();
+            ctx3.moveTo(75, 63);
+            ctx3.lineTo(80, 100);
+            ctx3.lineTo(70, 100);
+            ctx3.closePath();
+            ctx3.fill();
+            // Eyes
+            ctx3.fillStyle = '#000';
+            ctx3.beginPath();
+            ctx3.arc(62, 72, 6, 0, Math.PI * 2);
+            ctx3.fill();
+            ctx3.beginPath();
+            ctx3.arc(88, 74, 6, 0, Math.PI * 2);
+            ctx3.fill();
+            // Eye highlights
+            ctx3.fillStyle = '#FFF';
+            ctx3.beginPath();
+            ctx3.arc(64, 73, 2, 0, Math.PI * 2);
+            ctx3.fill();
+            ctx3.beginPath();
+            ctx3.arc(90, 75, 2, 0, Math.PI * 2);
+            ctx3.fill();
+            // Beak
+            ctx3.fillStyle = '#FF6347';
+            ctx3.beginPath();
+            ctx3.moveTo(120, 75);
+            ctx3.lineTo(138, 74);
+            ctx3.lineTo(138, 76);
+            ctx3.closePath();
+            ctx3.fill();
+        }
+
+        // Initialize on page load
+        initTitleScreen();
+        
+        // Game state
+        const game = {
+            score: 0,
+            seeds: 0,
+            currentArea: 'Sky',
+            worldWidth: 4000,
+            worldHeight: 4000,
+            characterSelected: false,
+            characterType: 1, // 1=Brandin, 2=Javious, 3=George Bush, 4=Techno Mode
+            technoMode: false,
+            bossActive: false,
+            bossSpawned: false,
+            shootCooldown: 0,
+            helperBirds: [],
+            helperBirdCounts: { 1: 0, 2: 0, 3: 0 },
+            baseCosts: { 1: 100, 2: 50, 3: 75 },
+            speedLevel: 1,
+            seedMultiplier: 1,
+            lastFrameTime: performance.now(),
+            frameCount: 0
+        };
+
+        // Speech bubbles
+        const speechBubbles = [];
+        
+        // Bullets (player projectiles)
+        const bullets = [];
+        
+        // Boss object
+        const boss = {
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: 0,
+            size: 120, // GIANT bird
+            health: 50, // Very difficult to beat
+            maxHealth: 50,
+            speed: 2.5, // Fast and aggressive
+            angle: 0,
+            color: '#8B0000', // Dark red menacing
+            wingPhase: 0,
+            attackCooldown: 0,
+            lastSpeechTime: 0
+        };
+
+        // Bird object (world coordinates)
+        const bird = {
+            x: game.worldWidth / 2,
+            y: game.worldHeight / 2,
+            vx: 0,
+            vy: 0,
+            speed: 5, // Increased from 3
+            maxSpeed: 12, // Increased from 8
+            size: 30,
+            angle: 0,
+            color: '#FFD700',
+            wingPhase: 0,
+            characterType: 1
+        };
+
+        // Helper Bird System
+        function getHelperBirdCost(type) {
+            const count = game.helperBirdCounts[type];
+            const baseCost = game.baseCosts[type];
+            return Math.floor(baseCost * Math.pow(1.25, count));
+        }
+
+        function toggleStore() {
+            const store = document.getElementById('store');
+            if (store.style.display === 'none') {
+                store.style.display = 'block';
+                updateStoreUI();
+            } else {
+                store.style.display = 'none';
+            }
+        }
+
+        function updateStoreUI() {
+            document.getElementById('brandinCount').textContent = game.helperBirdCounts[1];
+            document.getElementById('javiousCount').textContent = game.helperBirdCounts[2];
+            document.getElementById('bushCount').textContent = game.helperBirdCounts[3];
+            
+            const brandinCost = getHelperBirdCost(1);
+            const javiousCost = getHelperBirdCost(2);
+            const bushCost = getHelperBirdCost(3);
+            
+            document.getElementById('brandinCost').textContent = brandinCost;
+            document.getElementById('javiousCost').textContent = javiousCost;
+            document.getElementById('bushCost').textContent = bushCost;
+            
+            document.getElementById('buyBrandin').disabled = game.seeds < brandinCost;
+            document.getElementById('buyJavious').disabled = game.seeds < javiousCost;
+            document.getElementById('buyBush').disabled = game.seeds < bushCost;
+            
+            document.getElementById('speedLevel').textContent = game.speedLevel;
+            document.getElementById('speedCost').textContent = 150 * game.speedLevel;
+            document.getElementById('buySpeed').disabled = game.seeds < 150 * game.speedLevel;
+            
+            document.getElementById('multiplierLevel').textContent = game.seedMultiplier + 'x';
+            document.getElementById('multiplierCost').textContent = 200 * game.seedMultiplier;
+            document.getElementById('buyMultiplier').disabled = game.seeds < 200 * game.seedMultiplier;
+        }
+
+        function buyHelperBird(type) {
+            const cost = getHelperBirdCost(type);
+            if (game.seeds >= cost) {
+                game.seeds -= cost;
+                game.helperBirdCounts[type]++;
+                
+                const helperBird = {
+                    type: type,
+                    x: bird.x + (Math.random() - 0.5) * 200,
+                    y: bird.y + (Math.random() - 0.5) * 200,
+                    vx: 0,
+                    vy: 0,
+                    size: 25,
+                    angle: Math.random() * Math.PI * 2,
+                    wingPhase: Math.random() * Math.PI * 2,
+                    targetSeed: null,
+                    lastCollectionTime: 0,
+                    sleepPhase: 0,
+                    smallBirds: []
+                };
+                
+                if (type === 1) {
+                    helperBird.color = '#228B22';
+                    helperBird.speed = 3;
+                } else if (type === 2) {
+                    helperBird.color = '#FF69B4';
+                    helperBird.speed = 5;
+                } else if (type === 3) {
+                    helperBird.color = '#4169E1';
+                    helperBird.speed = 0;
+                    for (let i = 0; i < 3; i++) {
+                        helperBird.smallBirds.push({
+                            x: helperBird.x + (Math.random() - 0.5) * 100,
+                            y: helperBird.y + (Math.random() - 0.5) * 100,
+                            vx: 0,
+                            vy: 0,
+                            size: 10,
+                            angle: Math.random() * Math.PI * 2,
+                            wingPhase: Math.random() * Math.PI * 2,
+                            targetSeed: null,
+                            color: '#4169E1',
+                            speed: 2,
+                            hasSeed: false,
+                            returning: false
+                        });
+                    }
+                }
+                
+                game.helperBirds.push(helperBird);
+                updateStoreUI();
+                document.getElementById('seeds').textContent = game.seeds;
+            }
+        }
+
+        function buySpeedBoost() {
+            const cost = 150 * game.speedLevel;
+            if (game.seeds >= cost) {
+                game.seeds -= cost;
+                game.speedLevel++;
+                bird.speed += 0.5;
+                bird.maxSpeed += 1;
+                updateStoreUI();
+                document.getElementById('seeds').textContent = game.seeds;
+            }
+        }
+
+        function buySeedMultiplier() {
+            const cost = 200 * game.seedMultiplier;
+            if (game.seeds >= cost) {
+                game.seeds -= cost;
+                game.seedMultiplier *= 2;
+                updateStoreUI();
+                document.getElementById('seeds').textContent = game.seeds;
+            }
+        }
+
+        // Audio context for music
+        let audioContext = null;
+        let musicGainNode = null;
+        let musicOscillators = [];
+
+        // Camera
+        const camera = {
+            x: bird.x - canvas.width / 2,
+            y: bird.y - canvas.height / 2,
+            lerpSpeed: 0.25 // Increased from 0.1 for more responsive camera
+        };
+
+        // Areas/biomes
+        const areas = [
+            { name: 'Sky', x: 0, y: 0, color: '#87CEEB', clouds: true },
+            { name: 'Forest', x: 1000, y: 500, color: '#228B22', trees: true },
+            { name: 'Mountain', x: 2000, y: 0, color: '#8B7355', peaks: true },
+            { name: 'Ocean', x: 500, y: 2000, color: '#1E90FF', waves: true },
+            { name: 'Desert', x: 3000, y: 1500, color: '#EDC9AF', dunes: true },
+            { name: 'Volcano', x: 3500, y: 500, color: '#8B0000', lava: true }
+        ];
+
+        // Seeds (collectibles)
+        const seeds = [];
+        function generateSeeds() {
+            for (let i = 0; i < 100; i++) {
+                seeds.push({
+                    x: Math.random() * game.worldWidth,
+                    y: Math.random() * game.worldHeight,
+                    collected: false,
+                    size: 8,
+                    color: '#8B4513',
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+        }
+        generateSeeds();
+
+        // Clouds
+        const clouds = [];
+        function generateClouds() {
+            for (let i = 0; i < 50; i++) {
+                clouds.push({
+                    x: Math.random() * game.worldWidth,
+                    y: Math.random() * game.worldHeight * 0.6,
+                    size: 40 + Math.random() * 60,
+                    speed: 0.2 + Math.random() * 0.3
+                });
+            }
+        }
+        generateClouds();
+
+        // Trees
+        const trees = [];
+        function generateTrees() {
+            for (let i = 0; i < 30; i++) {
+                trees.push({
+                    x: 1000 + Math.random() * 800,
+                    y: 500 + Math.random() * 800,
+                    size: 30 + Math.random() * 40,
+                    color: '#654321'
+                });
+            }
+        }
+        generateTrees();
+
+        // Mountains
+        const mountainPeaks = [];
+        function generateMountains() {
+            for (let i = 0; i < 15; i++) {
+                mountainPeaks.push({
+                    x: 2000 + Math.random() * 1000,
+                    y: 0 + Math.random() * 600,
+                    size: 80 + Math.random() * 100,
+                    snow: Math.random() > 0.5
+                });
+            }
+        }
+        generateMountains();
+
+        // Ocean waves
+        const waves = [];
+        function generateWaves() {
+            for (let i = 0; i < 20; i++) {
+                waves.push({
+                    x: 500 + Math.random() * 800,
+                    y: 2000 + Math.random() * 800,
+                    phase: Math.random() * Math.PI * 2,
+                    speed: 0.05 + Math.random() * 0.05,
+                    amplitude: 10 + Math.random() * 20
+                });
+            }
+        }
+        generateWaves();
+
+        // Desert dunes
+        const dunes = [];
+        function generateDunes() {
+            for (let i = 0; i < 25; i++) {
+                dunes.push({
+                    x: 3000 + Math.random() * 800,
+                    y: 1500 + Math.random() * 800,
+                    size: 60 + Math.random() * 80,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+        }
+        generateDunes();
+
+        // Volcano particles
+        const lavaParticles = [];
+        function generateLavaParticles() {
+            for (let i = 0; i < 30; i++) {
+                lavaParticles.push({
+                    x: 3500 + (Math.random() - 0.5) * 100,
+                    y: 500 + Math.random() * 50,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: -Math.random() * 3 - 1,
+                    life: Math.random(),
+                    maxLife: 1,
+                    size: 3 + Math.random() * 5
+                });
+            }
+        }
+        generateLavaParticles();
+
+        // Glitter particles for Techno Mode
+        const glitterParticles = [];
+        function generateGlitter() {
+            glitterParticles.length = 0; // Clear existing
+            for (let i = 0; i < 500; i++) { // Tons of glitter!
+                glitterParticles.push({
+                    x: Math.random() * game.worldWidth,
+                    y: Math.random() * game.worldHeight,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4,
+                    size: 2 + Math.random() * 4,
+                    color: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'][Math.floor(Math.random() * 6)],
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.2,
+                    life: 1,
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        // Boss functions
+        function spawnBoss() {
+            game.bossSpawned = true;
+            game.bossActive = true;
+            // Spawn boss far from player initially
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 600;
+            boss.x = bird.x + Math.cos(angle) * distance;
+            boss.y = bird.y + Math.sin(angle) * distance;
+            boss.health = boss.maxHealth;
+            boss.lastSpeechTime = Date.now();
+            
+            // Start metal music
+            stopMusic();
+            playMetalMusic();
+            
+            // Show boss UI
+            document.getElementById('bossStatus').style.display = 'block';
+            document.getElementById('bossInstructions').style.display = 'block';
+            
+            // Initial boss speech
+            addSpeechBubble("I'm in your walls", boss.x, boss.y - 60);
+        }
+
+        function shootBullet() {
+            // Shoot in direction bird is facing
+            bullets.push({
+                x: bird.x,
+                y: bird.y,
+                vx: Math.cos(bird.angle) * 12,
+                vy: Math.sin(bird.angle) * 12,
+                size: 6,
+                color: '#FFD700'
+            });
+        }
+
+        // Input handling - FIX: Proper arrow key handling
+        const keys = {};
+        
+        function getKeyName(e) {
+            // Handle arrow keys
+            if (e.key === 'ArrowLeft') return 'arrowleft';
+            if (e.key === 'ArrowRight') return 'arrowright';
+            if (e.key === 'ArrowUp') return 'arrowup';
+            if (e.key === 'ArrowDown') return 'arrowdown';
+            // Handle Enter key
+            if (e.key === 'Enter') return 'enter';
+            // Handle Space
+            if (e.key === ' ') return ' ';
+            // Everything else, lowercase
+            return e.key.toLowerCase();
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            const key = getKeyName(e);
+            keys[key] = true;
+            // Prevent default for arrow keys and space to avoid scrolling
+            if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown', ' '].includes(key)) {
+                e.preventDefault();
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            const key = getKeyName(e);
+            keys[key] = false;
+            if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown', ' '].includes(key)) {
+                e.preventDefault();
+            }
+        });
+
+        // Determine current area
+        function getCurrentArea() {
+            for (const area of areas) {
+                const dx = bird.x - area.x;
+                const dy = bird.y - area.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 500) {
+                    return area;
+                }
+            }
+            return areas[0]; // Default to Sky
+        }
+
+        // Update game
+        function update() {
+            // Handle input
+            const boost = keys[' '] ? 1.5 : 1;
+            let accelX = 0;
+            let accelY = 0;
+
+            if (keys['arrowleft'] || keys['a']) accelX = -1;
+            if (keys['arrowright'] || keys['d']) accelX = 1;
+            if (keys['arrowup'] || keys['w']) accelY = -1;
+            if (keys['arrowdown'] || keys['s']) accelY = 1;
+
+            // Normalize diagonal movement
+            if (accelX !== 0 && accelY !== 0) {
+                accelX *= 0.707;
+                accelY *= 0.707;
+            }
+
+            // Apply acceleration - increased for more responsive controls
+            bird.vx += accelX * 0.5 * boost;
+            bird.vy += accelY * 0.5 * boost;
+
+            // Apply friction - less friction for smoother movement
+            bird.vx *= 0.95;
+            bird.vy *= 0.95;
+
+            // Limit speed
+            const speed = Math.sqrt(bird.vx * bird.vx + bird.vy * bird.vy);
+            if (speed > bird.maxSpeed * boost) {
+                bird.vx = (bird.vx / speed) * bird.maxSpeed * boost;
+                bird.vy = (bird.vy / speed) * bird.maxSpeed * boost;
+            }
+
+            // Update bird position (world coordinates)
+            bird.x += bird.vx;
+            bird.y += bird.vy;
+
+            // Keep bird in world bounds
+            bird.x = Math.max(bird.size, Math.min(game.worldWidth - bird.size, bird.x));
+            bird.y = Math.max(bird.size, Math.min(game.worldHeight - bird.size, bird.y));
+
+            // Update angle based on velocity
+            if (speed > 0.1) {
+                bird.angle = Math.atan2(bird.vy, bird.vx);
+            }
+
+            // Update camera to follow bird
+            const targetX = bird.x - canvas.width / 2;
+            const targetY = bird.y - canvas.height / 2;
+            camera.x += (targetX - camera.x) * camera.lerpSpeed;
+            camera.y += (targetY - camera.y) * camera.lerpSpeed;
+
+            // Keep camera in world bounds
+            camera.x = Math.max(0, Math.min(game.worldWidth - canvas.width, camera.x));
+            camera.y = Math.max(0, Math.min(game.worldHeight - canvas.height, camera.y));
+
+            // Check seed collection (bird is in world coordinates)
+            seeds.forEach(seed => {
+                if (!seed.collected) {
+                    const dx = seed.x - bird.x;
+                    const dy = seed.y - bird.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    // Increased collection range for better feel
+                    if (dist < bird.size + seed.size + 5) {
+                        seed.collected = true;
+                        game.seeds += game.seedMultiplier;
+                        game.score += 10 * game.seedMultiplier;
+                        // Add speech bubble
+                        const speechText = getSpeechText(bird.characterType);
+                        addSpeechBubble(speechText);
+                        
+                        // Spawn boss after 50 seeds (more challenging)
+                        if (game.seeds >= 50 && !game.bossSpawned) {
+                            spawnBoss();
+                        }
+                    }
+                }
+                seed.pulse += 0.1;
+            });
+
+            // Update current area
+            const currentArea = getCurrentArea();
+            game.currentArea = currentArea.name;
+
+            // Update UI
+            document.getElementById('score').textContent = game.score;
+            document.getElementById('seeds').textContent = game.seeds;
+            document.getElementById('area').textContent = game.currentArea;
+
+            // Wing animation - faster for more dynamic feel
+            bird.wingPhase += 0.5;
+
+            // Update lava particles
+            lavaParticles.forEach(particle => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.vy += 0.1; // gravity
+                particle.life -= 0.02;
+                if (particle.life <= 0) {
+                    particle.life = particle.maxLife;
+                    particle.x = 3500 + (Math.random() - 0.5) * 100;
+                    particle.y = 500 + Math.random() * 50;
+                    particle.vx = (Math.random() - 0.5) * 2;
+                    particle.vy = -Math.random() * 3 - 1;
+                }
+            });
+
+            // Update waves
+            waves.forEach(wave => {
+                wave.phase += wave.speed;
+            });
+
+            // Update dunes
+            dunes.forEach(dune => {
+                dune.phase += 0.01;
+            });
+
+            // Shooting mechanics (Enter key)
+            if (keys['enter'] && game.bossActive) {
+                // Add cooldown to prevent spam
+                if (!game.shootCooldown || game.shootCooldown <= 0) {
+                    shootBullet();
+                    game.shootCooldown = 10; // 10 frames cooldown
+                }
+            }
+            if (game.shootCooldown) game.shootCooldown--;
+
+            // Update bullets
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const bullet = bullets[i];
+                bullet.x += bullet.vx;
+                bullet.y += bullet.vy;
+                
+                // Remove if out of bounds
+                if (bullet.x < 0 || bullet.x > game.worldWidth || 
+                    bullet.y < 0 || bullet.y > game.worldHeight) {
+                    bullets.splice(i, 1);
+                    continue;
+                }
+                
+                // Check collision with boss
+                if (game.bossActive && boss.health > 0) {
+                    const dx = bullet.x - boss.x;
+                    const dy = bullet.y - boss.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < boss.size * 0.8) {
+                        boss.health--;
+                        bullets.splice(i, 1);
+                        if (boss.health <= 0) {
+                            game.bossActive = false;
+                            stopMusic();
+                            startMusic(game.characterType); // Resume normal music
+                            // Hide boss UI
+                            document.getElementById('bossStatus').style.display = 'none';
+                            document.getElementById('bossInstructions').style.display = 'none';
+                        }
+                    }
+                }
+            }
+
+            // Update boss AI (aggressive chasing)
+            if (game.bossActive && boss.health > 0) {
+                // Chase player aggressively
+                const dx = bird.x - boss.x;
+                const dy = bird.y - boss.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist > 0) {
+                    boss.vx = (dx / dist) * boss.speed;
+                    boss.vy = (dy / dist) * boss.speed;
+                    boss.angle = Math.atan2(dy, dx);
+                }
+                
+                boss.x += boss.vx;
+                boss.y += boss.vy;
+                boss.wingPhase += 0.4;
+                boss.attackCooldown--;
+                
+                // Boss speech (creepy messages)
+                if (Date.now() - boss.lastSpeechTime > 3000) { // Every 3 seconds
+                    const bossMessages = [
+                        "I'm in your walls",
+                        "I'm out to get you",
+                        "You can't escape",
+                        "I see you",
+                        "Run all you want",
+                        "There's no hiding"
+                    ];
+                    const msg = bossMessages[Math.floor(Math.random() * bossMessages.length)];
+                    addSpeechBubble(msg, boss.x, boss.y - 60);
+                    boss.lastSpeechTime = Date.now();
+                }
+                
+                // Check collision with player (damage player/difficult)
+                if (dist < boss.size * 0.8 + bird.size) {
+                    // Push player away and slow them down
+                    bird.vx = -boss.vx * 2;
+                    bird.vy = -boss.vy * 2;
+                }
+            }
+
+            // Update glitter particles (Techno Mode)
+            if (game.technoMode) {
+                glitterParticles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.rotation += particle.rotationSpeed;
+                    particle.pulse += 0.2;
+                    
+                    // Wrap around edges
+                    if (particle.x < 0) particle.x = game.worldWidth;
+                    if (particle.x > game.worldWidth) particle.x = 0;
+                    if (particle.y < 0) particle.y = game.worldHeight;
+                    if (particle.y > game.worldHeight) particle.y = 0;
+                    
+                    // Random direction changes for chaos
+                    if (Math.random() < 0.02) {
+                        particle.vx = (Math.random() - 0.5) * 4;
+                        particle.vy = (Math.random() - 0.5) * 4;
+                    }
+                });
+            }
+        }
+
+        // Draw functions
+        function drawBackground() {
+            // Create smooth gradient background blending area colors
+            const gradient = ctx.createLinearGradient(-camera.x, -camera.y, -camera.x + canvas.width, -camera.y + canvas.height);
+            
+            // Use current area color as base
+            const currentArea = getCurrentArea();
+            ctx.fillStyle = currentArea.color;
+            ctx.fillRect(-camera.x, -camera.y, game.worldWidth, game.worldHeight);
+            
+            // Add subtle area markers with gradients
+            areas.forEach(area => {
+                const x = area.x - camera.x;
+                const y = area.y - camera.y;
+                if (x > -600 && x < canvas.width + 600 && y > -600 && y < canvas.height + 600) {
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 500);
+                    gradient.addColorStop(0, area.color + '80');
+                    gradient.addColorStop(1, 'transparent');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(x - 500, y - 500, 1000, 1000);
+                }
+            });
+        }
+
+        function drawClouds() {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            clouds.forEach(cloud => {
+                const x = cloud.x - camera.x;
+                const y = cloud.y - camera.y;
+                if (x > -100 && x < canvas.width + 100 && y > -100 && y < canvas.height + 100) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, cloud.size, 0, Math.PI * 2);
+                    ctx.arc(x + cloud.size * 0.6, y, cloud.size * 0.8, 0, Math.PI * 2);
+                    ctx.arc(x + cloud.size * 1.2, y, cloud.size * 0.9, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                cloud.x += cloud.speed;
+                if (cloud.x > game.worldWidth + 100) cloud.x = -100;
+            });
+        }
+
+        function drawTrees() {
+            trees.forEach(tree => {
+                const x = tree.x - camera.x;
+                const y = tree.y - camera.y;
+                if (x > -50 && x < canvas.width + 50 && y > -100 && y < canvas.height + 100) {
+                    // Trunk
+                    ctx.fillStyle = tree.color;
+                    ctx.fillRect(x - 5, y, 10, tree.size * 0.6);
+                    // Leaves
+                    ctx.fillStyle = '#228B22';
+                    ctx.beginPath();
+                    ctx.arc(x, y, tree.size * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+
+        function drawMountains() {
+            mountainPeaks.forEach(peak => {
+                const x = peak.x - camera.x;
+                const y = peak.y - camera.y;
+                if (x > -200 && x < canvas.width + 200 && y > -200 && y < canvas.height + 200) {
+                    ctx.fillStyle = peak.snow ? '#F5F5F5' : '#696969';
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + peak.size);
+                    ctx.lineTo(x + peak.size * 0.5, y);
+                    ctx.lineTo(x + peak.size, y + peak.size);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            });
+        }
+
+        function drawWaves() {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = 3;
+            waves.forEach(wave => {
+                const x = wave.x - camera.x;
+                const y = wave.y - camera.y;
+                if (x > -100 && x < canvas.width + 100 && y > -100 && y < canvas.height + 100) {
+                    ctx.beginPath();
+                    for (let i = 0; i < 200; i++) {
+                        const px = x + i - 100;
+                        const py = y + Math.sin((i / 20) + wave.phase) * wave.amplitude;
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.stroke();
+                }
+            });
+        }
+
+        function drawDunes() {
+            dunes.forEach(dune => {
+                const x = dune.x - camera.x;
+                const y = dune.y - camera.y;
+                if (x > -150 && x < canvas.width + 150 && y > -100 && y < canvas.height + 100) {
+                    ctx.fillStyle = '#D2B48C';
+                    ctx.beginPath();
+                    ctx.arc(x, y, dune.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#C19A6B';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(x, y, dune.size * 0.8, 0, Math.PI);
+                    ctx.stroke();
+                }
+            });
+        }
+
+        function drawLavaParticles() {
+            lavaParticles.forEach(particle => {
+                const x = particle.x - camera.x;
+                const y = particle.y - camera.y;
+                if (x > -50 && x < canvas.width + 50 && y > -50 && y < canvas.height + 50) {
+                    const alpha = particle.life / particle.maxLife;
+                    ctx.fillStyle = `rgba(255, ${100 + Math.floor(alpha * 155)}, 0, ${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, particle.size * alpha, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+
+        function drawSeeds() {
+            seeds.forEach(seed => {
+                if (!seed.collected) {
+                    const x = seed.x - camera.x;
+                    const y = seed.y - camera.y;
+                    // Viewport culling for performance
+                    if (x > -30 && x < canvas.width + 30 && y > -30 && y < canvas.height + 30) {
+                        const pulseSize = seed.size + Math.sin(seed.pulse) * 3;
+                        const pulseGlow = Math.sin(seed.pulse) * 0.5 + 0.5; // 0 to 1
+                        
+                        // Outer glow
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = '#FFD700';
+                        
+                        // Seed gradient
+                        const seedGradient = ctx.createRadialGradient(x, y, 0, x, y, pulseSize);
+                        seedGradient.addColorStop(0, '#FFD700');
+                        seedGradient.addColorStop(0.5, '#8B4513');
+                        seedGradient.addColorStop(1, '#654321');
+                        
+                        // Draw glow ring
+                        ctx.globalAlpha = pulseGlow * 0.6;
+                        ctx.fillStyle = '#FFD700';
+                        ctx.beginPath();
+                        ctx.arc(x, y, pulseSize + 5, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw seed body
+                        ctx.globalAlpha = 1;
+                        ctx.fillStyle = seedGradient;
+                        ctx.beginPath();
+                        ctx.arc(x, y, pulseSize, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Highlight
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                        ctx.beginPath();
+                        ctx.arc(x - pulseSize * 0.3, y - pulseSize * 0.3, pulseSize * 0.4, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Outline
+                        ctx.strokeStyle = '#654321';
+                        ctx.lineWidth = 1.5;
+                        ctx.shadowBlur = 0;
+                        ctx.beginPath();
+                        ctx.arc(x, y, pulseSize, 0, Math.PI * 2);
+                        ctx.stroke();
+                        
+                        ctx.globalAlpha = 1;
+                    }
+                }
+            });
+        }
+
+        function drawBird() {
+            // Convert world coordinates to screen coordinates
+            const screenX = bird.x - camera.x;
+            const screenY = bird.y - camera.y;
+            
+            // Only draw if on screen (viewport culling for performance)
+            if (screenX < -100 || screenX > canvas.width + 100 || 
+                screenY < -100 || screenY > canvas.height + 100) return;
+            
+            ctx.save();
+            ctx.translate(screenX, screenY);
+            ctx.rotate(bird.angle);
+
+            // Shadow/glow effect
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+
+            // Body with gradient
+            const bodyGradient = ctx.createRadialGradient(-bird.size * 0.2, -bird.size * 0.1, 0, 0, 0, bird.size * 0.6);
+            bodyGradient.addColorStop(0, bird.color);
+            bodyGradient.addColorStop(1, shadeColor(bird.color, -30));
+            ctx.fillStyle = bodyGradient;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, bird.size * 0.6, bird.size * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Character-specific features
+            ctx.shadowBlur = 0; // Disable shadow for details
+            if (bird.characterType === 1) {
+                // Brandin - Italian bird (green, white, red stripes)
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(-bird.size * 0.5, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
+                ctx.fillStyle = '#CE2B37';
+                ctx.fillRect(-bird.size * 0.15, -bird.size * 0.15, bird.size * 0.35, bird.size * 0.3);
+                // Add outline for better visibility
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            } else if (bird.characterType === 2) {
+                // Javious - Sun hat and glitter eyelashes
+                // Sun hat with gradient
+                const hatGradient = ctx.createRadialGradient(0, -bird.size * 0.5, 0, 0, -bird.size * 0.5, bird.size * 0.6);
+                hatGradient.addColorStop(0, '#FFF8DC');
+                hatGradient.addColorStop(1, '#FFD700');
+                ctx.fillStyle = hatGradient;
+                ctx.beginPath();
+                ctx.arc(0, -bird.size * 0.5, bird.size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+                // Hat band
+                ctx.fillStyle = '#FF1493';
+                ctx.fillRect(-bird.size * 0.45, -bird.size * 0.55, bird.size * 0.9, bird.size * 0.1);
+                // Glitter eyelashes
+                ctx.strokeStyle = '#FF1493';
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = '#FF1493';
+                for (let i = 0; i < 4; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(bird.size * 0.25, -bird.size * 0.05);
+                    ctx.lineTo(bird.size * 0.3 + i * 1.5, -bird.size * 0.12 - i * 1.5);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(-bird.size * 0.25, -bird.size * 0.05);
+                    ctx.lineTo(-bird.size * 0.3 - i * 1.5, -bird.size * 0.12 - i * 1.5);
+                    ctx.stroke();
+                }
+                ctx.shadowBlur = 0;
+            } else if (bird.characterType === 3) {
+                // George Bush - Presidential bird (tie and suit)
+                ctx.fillStyle = '#000080';
+                ctx.fillRect(-bird.size * 0.3, -bird.size * 0.2, bird.size * 0.6, bird.size * 0.25);
+                ctx.fillStyle = '#FF0000';
+                ctx.beginPath();
+                ctx.moveTo(0, bird.size * 0.15);
+                ctx.lineTo(bird.size * 0.15, bird.size * 0.5);
+                ctx.lineTo(-bird.size * 0.15, bird.size * 0.5);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Wings with better animation and gradient
+            const wingAngle = Math.sin(bird.wingPhase) * 0.6;
+            const wingGradient1 = ctx.createLinearGradient(-bird.size * 0.8, -bird.size * 0.3, -bird.size * 0.3, bird.size * 0.3);
+            wingGradient1.addColorStop(0, '#FF8C00');
+            wingGradient1.addColorStop(1, '#FFD700');
+            ctx.fillStyle = wingGradient1;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = 'rgba(255, 140, 0, 0.5)';
+            ctx.beginPath();
+            ctx.ellipse(-bird.size * 0.3, 0, bird.size * 0.5, bird.size * 0.3, wingAngle, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(-bird.size * 0.3, 0, bird.size * 0.5, bird.size * 0.3, -wingAngle, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Beak with gradient
+            ctx.shadowBlur = 0;
+            const beakGradient = ctx.createLinearGradient(bird.size * 0.5, 0, bird.size * 0.8, 0);
+            beakGradient.addColorStop(0, '#FF6347');
+            beakGradient.addColorStop(1, '#FF4500');
+            ctx.fillStyle = beakGradient;
+            ctx.beginPath();
+            ctx.moveTo(bird.size * 0.5, 0);
+            ctx.lineTo(bird.size * 0.85, -bird.size * 0.12);
+            ctx.lineTo(bird.size * 0.85, bird.size * 0.12);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#8B0000';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Eye with highlight
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(bird.size * 0.2, -bird.size * 0.1, 5, 0, Math.PI * 2);
+            ctx.fill();
+            // Eye highlight
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.arc(bird.size * 0.22, -bird.size * 0.12, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+        
+        // Helper function to shade colors
+        function shadeColor(color, percent) {
+            const num = parseInt(color.replace("#",""), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = Math.min(255, Math.max(0, (num >> 16) + amt));
+            const G = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amt));
+            const B = Math.min(255, Math.max(0, (num & 0x0000FF) + amt));
+            return "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+        }
+
+        function drawBoss() {
+            if (!game.bossActive || boss.health <= 0) return;
+            
+            // Convert world coordinates to screen coordinates
+            const screenX = boss.x - camera.x;
+            const screenY = boss.y - camera.y;
+            
+            // Only draw if on screen
+            if (screenX < -200 || screenX > canvas.width + 200 || 
+                screenY < -200 || screenY > canvas.height + 200) return;
+            
+            ctx.save();
+            ctx.translate(screenX, screenY);
+            ctx.rotate(boss.angle);
+
+            // Shadow/glow effect
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = 'rgba(139, 0, 0, 0.8)';
+            ctx.shadowOffsetX = 5;
+            ctx.shadowOffsetY = 5;
+
+            // Body - GIANT menacing bird with gradient
+            const bossGradient = ctx.createRadialGradient(-boss.size * 0.2, -boss.size * 0.1, 0, 0, 0, boss.size * 0.6);
+            bossGradient.addColorStop(0, '#DC143C');
+            bossGradient.addColorStop(0.5, '#8B0000');
+            bossGradient.addColorStop(1, '#5C0000');
+            ctx.fillStyle = bossGradient;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, boss.size * 0.6, boss.size * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Dark outline for menacing look
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 5;
+            ctx.shadowBlur = 0;
+            ctx.stroke();
+
+            // Wings - aggressive flapping with gradient
+            const wingAngle = Math.sin(boss.wingPhase) * 0.8;
+            const wingGradient = ctx.createLinearGradient(-boss.size * 0.8, -boss.size * 0.3, -boss.size * 0.3, boss.size * 0.3);
+            wingGradient.addColorStop(0, '#8B0000');
+            wingGradient.addColorStop(1, '#660000');
+            ctx.fillStyle = wingGradient;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = 'rgba(139, 0, 0, 0.6)';
+            ctx.beginPath();
+            ctx.ellipse(-boss.size * 0.3, 0, boss.size * 0.5, boss.size * 0.3, wingAngle, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(-boss.size * 0.3, 0, boss.size * 0.5, boss.size * 0.3, -wingAngle, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Giant menacing beak with gradient
+            ctx.shadowBlur = 0;
+            const beakGradient = ctx.createLinearGradient(boss.size * 0.5, 0, boss.size * 0.9, 0);
+            beakGradient.addColorStop(0, '#FF4500');
+            beakGradient.addColorStop(1, '#8B0000');
+            ctx.fillStyle = beakGradient;
+            ctx.beginPath();
+            ctx.moveTo(boss.size * 0.5, 0);
+            ctx.lineTo(boss.size * 0.95, -boss.size * 0.18);
+            ctx.lineTo(boss.size * 0.95, boss.size * 0.18);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Glowing red eyes with pulsing effect
+            const eyeGlow = Math.sin(boss.wingPhase * 2) * 0.3 + 0.7;
+            ctx.fillStyle = '#FF0000';
+            ctx.shadowBlur = 25 * eyeGlow;
+            ctx.shadowColor = '#FF0000';
+            ctx.beginPath();
+            ctx.arc(boss.size * 0.25, -boss.size * 0.12, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(-boss.size * 0.15, -boss.size * 0.12, 12, 0, Math.PI * 2);
+            ctx.fill();
+            // Eye pupils
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(boss.size * 0.25, -boss.size * 0.12, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(-boss.size * 0.15, -boss.size * 0.12, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+            
+            // Boss health bar
+            const healthBarWidth = 200;
+            const healthBarHeight = 20;
+            const healthPercent = boss.health / boss.maxHealth;
+            const barX = screenX - healthBarWidth / 2;
+            const barY = screenY - boss.size - 40;
+            
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(barX, barY, healthBarWidth, healthBarHeight);
+            ctx.fillStyle = healthPercent > 0.5 ? '#00ff00' : healthPercent > 0.25 ? '#ffff00' : '#ff0000';
+            ctx.fillRect(barX, barY, healthBarWidth * healthPercent, healthBarHeight);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(barX, barY, healthBarWidth, healthBarHeight);
+            
+            // Boss label
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('BOSS', screenX, barY - 15);
+        }
+
+        function drawBullets() {
+            bullets.forEach(bullet => {
+                const screenX = bullet.x - camera.x;
+                const screenY = bullet.y - camera.y;
+                
+                // Only draw if on screen
+                if (screenX > -50 && screenX < canvas.width + 50 && 
+                    screenY > -50 && screenY < canvas.height + 50) {
+                    ctx.save();
+                    ctx.fillStyle = bullet.color;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = bullet.color;
+                    ctx.beginPath();
+                    ctx.arc(screenX, screenY, bullet.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.restore();
+                }
+            });
+        }
+
+        function drawGlitter() {
+            if (!game.technoMode) return;
+            
+            glitterParticles.forEach(particle => {
+                const screenX = particle.x - camera.x;
+                const screenY = particle.y - camera.y;
+                
+                // Only draw if on screen (with generous bounds for wrapping)
+                if (screenX > -100 && screenX < canvas.width + 100 && 
+                    screenY > -100 && screenY < canvas.height + 100) {
+                    ctx.save();
+                    ctx.translate(screenX, screenY);
+                    ctx.rotate(particle.rotation);
+                    
+                    // Pulsing glow effect
+                    const pulseSize = particle.size * (1 + Math.sin(particle.pulse) * 0.5);
+                    
+                    // Glitter sparkle with glow
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = particle.color;
+                    ctx.fillStyle = particle.color;
+                    ctx.globalAlpha = 0.9;
+                    
+                    // Draw sparkle shape (X shape)
+                    ctx.beginPath();
+                    ctx.moveTo(-pulseSize, 0);
+                    ctx.lineTo(pulseSize, 0);
+                    ctx.moveTo(0, -pulseSize);
+                    ctx.lineTo(0, pulseSize);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = particle.color;
+                    ctx.stroke();
+                    
+                    // Center dot
+                    ctx.beginPath();
+                    ctx.arc(0, 0, pulseSize * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.restore();
+                }
+            });
+        }
+
+        function drawTechnoModeGlow() {
+            if (!game.technoMode) return;
+            
+            // Create pulsing colored overlay
+            const time = Date.now() * 0.003;
+            const glowIntensity = 0.3 + Math.sin(time) * 0.2;
+            
+            // Cycle through colors: red, green, blue, yellow, pink
+            const colors = [
+                `rgba(255, 0, 0, ${glowIntensity})`,    // Red
+                `rgba(0, 255, 0, ${glowIntensity})`,    // Green
+                `rgba(0, 0, 255, ${glowIntensity})`,    // Blue
+                `rgba(255, 255, 0, ${glowIntensity})`,  // Yellow
+                `rgba(255, 0, 255, ${glowIntensity})`   // Pink
+            ];
+            
+            const colorIndex = Math.floor(time * 0.5) % colors.length;
+            const nextColorIndex = (colorIndex + 1) % colors.length;
+            const blendFactor = (time * 0.5) % 1;
+            
+            // Create gradient overlay
+            const gradient = ctx.createRadialGradient(
+                canvas.width / 2, canvas.height / 2, 0,
+                canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height)
+            );
+            gradient.addColorStop(0, colors[colorIndex]);
+            gradient.addColorStop(1, colors[nextColorIndex]);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add additional pulsing glow from edges
+            ctx.fillStyle = colors[colorIndex];
+            ctx.globalAlpha = glowIntensity * 0.5;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 1;
+        }
+
+        function drawAreaMarkers() {
+            areas.forEach(area => {
+                const x = area.x - camera.x;
+                const y = area.y - camera.y;
+                if (x > -100 && x < canvas.width + 100 && y > -100 && y < canvas.height + 100) {
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash([10, 10]);
+                    ctx.strokeRect(x - 250, y - 250, 500, 500);
+                    ctx.setLineDash([]);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.font = '20px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(area.name, x, y - 270);
+                }
+            });
+        }
+
+        function drawMinimap() {
+            // Clear minimap
+            minimapCtx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            minimapCtx.fillRect(0, 0, minimapCanvas.width, minimapCanvas.height);
+            
+            // Scale factor
+            const scaleX = minimapCanvas.width / game.worldWidth;
+            const scaleY = minimapCanvas.height / game.worldHeight;
+            
+            // Draw areas
+            areas.forEach(area => {
+                const x = area.x * scaleX;
+                const y = area.y * scaleY;
+                minimapCtx.fillStyle = area.color + '80';
+                minimapCtx.fillRect(x - 10, y - 10, 20, 20);
+                minimapCtx.fillStyle = 'white';
+                minimapCtx.font = '8px Arial';
+                minimapCtx.textAlign = 'center';
+                minimapCtx.fillText(area.name.substring(0, 4), x, y - 12);
+            });
+            
+            // Draw camera viewport
+            minimapCtx.strokeStyle = 'yellow';
+            minimapCtx.lineWidth = 2;
+            minimapCtx.strokeRect(
+                camera.x * scaleX,
+                camera.y * scaleY,
+                canvas.width * scaleX,
+                canvas.height * scaleY
+            );
+            
+            // Draw bird position
+            minimapCtx.fillStyle = '#FFD700';
+            minimapCtx.beginPath();
+            minimapCtx.arc(bird.x * scaleX, bird.y * scaleY, 3, 0, Math.PI * 2);
+            minimapCtx.fill();
+        }
+
+        // Character selection
+        function selectCharacter(type) {
+            game.characterSelected = true;
+            game.characterType = type;
+            bird.characterType = type;
+            
+            // Set bird colors/styles based on character
+            if (type === 1) { // Brandin - Italian (green, white, red)
+                bird.color = '#228B22'; // Green
+                game.technoMode = false;
+            } else if (type === 2) { // Javious - Sun hat and glitter
+                bird.color = '#FF69B4'; // Pink
+                game.technoMode = false;
+            } else if (type === 3) { // George Bush
+                bird.color = '#4169E1'; // Royal blue
+                game.technoMode = false;
+            } else if (type === 4) { // Techno Mode!
+                bird.color = '#FF00FF'; // Magenta
+                game.technoMode = true;
+                generateGlitter();
+            }
+            
+            // Hide character select screen
+            document.getElementById('characterSelect').style.display = 'none';
+            
+            // Start music
+            startMusic(type);
+            
+            // Start game loop
+            gameLoop();
+        }
+
+        // Music generation functions
+        function initAudio() {
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    musicGainNode = audioContext.createGain();
+                    musicGainNode.gain.value = 0.3;
+                    musicGainNode.connect(audioContext.destination);
+                } catch(e) {
+                    console.log('Audio not supported');
+                }
+            } else if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        function startMusic(characterType) {
+            initAudio();
+            stopMusic();
+            
+            if (characterType === 1) {
+                // Intense music for Brandin - dark, dramatic tones
+                musicGainNode.gain.value = 0.3;
+                playIntenseMusic();
+            } else if (characterType === 2) {
+                // Reggae for Javious - laid back, rhythmic
+                musicGainNode.gain.value = 0.3;
+                playReggaeMusic();
+            } else if (characterType === 3) {
+                // Mary Had a Little Lamb for George Bush
+                musicGainNode.gain.value = 0.3;
+                playMaryHadALittleLamb();
+            } else if (characterType === 4) {
+                // LOUD techno for Techno Mode (semi-clipping)
+                musicGainNode.gain.value = 0.9; // Very loud, almost clipping
+                playTechnoMusic();
+            }
+        }
+
+        function stopMusic() {
+            musicOscillators.forEach(osc => {
+                try { osc.stop(); } catch(e) {}
+            });
+            musicOscillators = [];
+        }
+
+        function playIntenseMusic() {
+            const notes = [220, 247, 262, 294, 311, 349, 392, 440]; // Minor scale
+            let noteIndex = 0;
+            
+            function playNote() {
+                const osc1 = audioContext.createOscillator();
+                const osc2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                osc1.type = 'sawtooth';
+                osc2.type = 'triangle';
+                osc1.frequency.value = notes[noteIndex];
+                osc2.frequency.value = notes[noteIndex] * 0.5;
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(musicGainNode);
+                
+                osc1.start();
+                osc2.start();
+                osc1.stop(audioContext.currentTime + 0.3);
+                osc2.stop(audioContext.currentTime + 0.3);
+                
+                noteIndex = (noteIndex + 1) % notes.length;
+            }
+            
+            setInterval(playNote, 150);
+        }
+
+        function playReggaeMusic() {
+            const bassFreq = 110; // A2
+            const melody = [330, 392, 440, 523, 587, 659]; // Upbeat scale
+            
+            // Bass line
+            function playBass() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = bassFreq;
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.4);
+            }
+            
+            // Melody
+            let melIndex = 0;
+            function playMelody() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'square';
+                osc.frequency.value = melody[melIndex];
+                gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.2);
+                melIndex = (melIndex + 1) % melody.length;
+            }
+            
+            setInterval(playBass, 400);
+            setInterval(playMelody, 300);
+        }
+
+        function playMaryHadALittleLamb() {
+            // Notes: E D C D E E E, D D D, E G G, E D C D E E E E D D E D C
+            const notes = [659.25, 587.33, 523.25, 587.33, 659.25, 659.25, 659.25,
+                           587.33, 587.33, 587.33, 659.25, 783.99, 783.99,
+                           659.25, 587.33, 523.25, 587.33, 659.25, 659.25, 659.25, 659.25, 587.33, 587.33, 659.25, 587.33, 523.25];
+            let noteIndex = 0;
+            
+            function playNote() {
+                if (noteIndex >= notes.length) noteIndex = 0;
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = notes[noteIndex];
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+                noteIndex++;
+            }
+            
+            setInterval(playNote, 350);
+        }
+
+        function playTechnoMusic() {
+            // Generic techno with bass and synth
+            const bassFreq = 55; // Low A
+            const synthNotes = [220, 277, 330, 392, 440, 554, 659, 784]; // Techno scale
+            
+            // Heavy bass kick
+            function playKick() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(bassFreq, audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, audioContext.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.8, audioContext.currentTime); // Very loud
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+            }
+            
+            // Synth melody
+            let synthIndex = 0;
+            function playSynth() {
+                const osc1 = audioContext.createOscillator();
+                const osc2 = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc1.type = 'sawtooth';
+                osc2.type = 'square';
+                osc1.frequency.value = synthNotes[synthIndex];
+                osc2.frequency.value = synthNotes[synthIndex] * 2;
+                gain.gain.setValueAtTime(0.7, audioContext.currentTime); // Very loud
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(musicGainNode);
+                osc1.start();
+                osc2.start();
+                osc1.stop(audioContext.currentTime + 0.15);
+                osc2.stop(audioContext.currentTime + 0.15);
+                synthIndex = (synthIndex + 1) % synthNotes.length;
+            }
+            
+            // Hi-hat
+            function playHiHat() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'square';
+                osc.frequency.value = 8000;
+                gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.05);
+            }
+            
+            setInterval(playKick, 250); // 4/4 kick
+            setInterval(playSynth, 125); // Fast synth
+            setInterval(playHiHat, 125); // Fast hi-hat
+        }
+
+        function playMetalMusic() {
+            // Intense stressful metal music
+            musicGainNode.gain.value = 0.85; // Very loud, stressful
+            
+            const powerChordFreqs = [220, 277, 330]; // Power chords
+            const metalNotes = [196, 220, 247, 262, 294, 330, 349, 392]; // Aggressive scale
+            
+            // Heavy distorted rhythm guitar
+            let rhythmIndex = 0;
+            function playRhythm() {
+                const osc1 = audioContext.createOscillator();
+                const osc2 = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc1.type = 'sawtooth';
+                osc2.type = 'square';
+                osc1.frequency.value = metalNotes[rhythmIndex];
+                osc2.frequency.value = metalNotes[rhythmIndex] * 1.5;
+                gain.gain.setValueAtTime(0.9, audioContext.currentTime); // Very loud
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(musicGainNode);
+                osc1.start();
+                osc2.start();
+                osc1.stop(audioContext.currentTime + 0.2);
+                osc2.stop(audioContext.currentTime + 0.2);
+                rhythmIndex = (rhythmIndex + 1) % metalNotes.length;
+            }
+            
+            // Aggressive bass
+            function playMetalBass() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.value = 110; // Low and aggressive
+                gain.gain.setValueAtTime(0.8, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.25);
+            }
+            
+            // Fast drum pattern
+            function playMetalDrums() {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'square';
+                osc.frequency.value = 200;
+                gain.gain.setValueAtTime(0.6, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(musicGainNode);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.05);
+            }
+            
+            setInterval(playRhythm, 100); // Very fast, intense
+            setInterval(playMetalBass, 150);
+            setInterval(playMetalDrums, 80);
+        }
+
+        // Speech bubble system
+        function addSpeechBubble(text, x, y) {
+            speechBubbles.push({
+                x: x !== undefined ? x : bird.x, // World coordinates
+                y: y !== undefined ? y : bird.y - 40, // World coordinates
+                text: text,
+                life: 120, // frames (2 seconds at 60fps)
+                alpha: 1
+            });
+        }
+
+        function getSpeechText(characterType) {
+            if (characterType === 1) { // Brandin - Nihilistic
+                const texts = [
+                    "this will never end",
+                    "nothing matters",
+                    "we're all dust",
+                    "meaningless",
+                    "pointless existence",
+                    "why continue?",
+                    "eternal suffering"
+                ];
+                return texts[Math.floor(Math.random() * texts.length)];
+            } else if (characterType === 2) { // Javious - Excited
+                const texts = [
+                    "WOOOOOOAH",
+                    "WHAT DO YOU THINK YOURE DOING",
+                    "YEAHHHH",
+                    "AMAZING!",
+                    "INCREDIBLE!",
+                    "FANTASTIC!",
+                    "WOWZA!"
+                ];
+                return texts[Math.floor(Math.random() * texts.length)];
+            } else { // George Bush - Resigned
+                return "Oh well...";
+            }
+        }
+
+        function drawSpeechBubbles() {
+            // Remove expired bubbles first (reverse loop to avoid index issues)
+            for (let i = speechBubbles.length - 1; i >= 0; i--) {
+                const bubble = speechBubbles[i];
+                bubble.life--;
+                bubble.alpha = Math.min(1, bubble.life / 30);
+                bubble.y -= 0.5; // Float upward in world space
+                
+                if (bubble.life <= 0) {
+                    speechBubbles.splice(i, 1);
+                    continue;
+                }
+                
+                // Convert world coordinates to screen coordinates
+                const screenX = bubble.x - camera.x;
+                const screenY = bubble.y - camera.y;
+                
+                // Only draw if on screen
+                if (screenX > -100 && screenX < canvas.width + 100 && 
+                    screenY > -50 && screenY < canvas.height + 50) {
+                    ctx.save();
+                    ctx.globalAlpha = bubble.alpha;
+                    
+                    // Speech bubble background
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2;
+                    
+                    ctx.font = '14px Arial';
+                    const textWidth = ctx.measureText(bubble.text).width;
+                    const padding = 10;
+                    const bubbleWidth = textWidth + padding * 2;
+                    const bubbleHeight = 30;
+                    
+                    // Draw rounded rectangle
+                    ctx.beginPath();
+                    ctx.roundRect(screenX - bubbleWidth/2, screenY - bubbleHeight, bubbleWidth, bubbleHeight, 8);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Draw text
+                    ctx.fillStyle = '#000';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(bubble.text, screenX, screenY - bubbleHeight/2);
+                    
+                    ctx.restore();
+                }
+            }
+        }
+
+        // Add roundRect if not available
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+
+        // Main game loop
+        function gameLoop() {
+            if (!game.characterSelected) {
+                return; // Don't run game until character is selected
+            }
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw world (order matters - background to foreground)
+            drawBackground();
+            drawTechnoModeGlow(); // Techno Mode colored overlay
+            drawClouds();
+            drawWaves();
+            drawTrees();
+            drawMountains();
+            drawDunes();
+            drawLavaParticles();
+            drawGlitter(); // Draw glitter particles in Techno Mode
+            drawAreaMarkers();
+            drawSeeds();
+            drawBoss(); // Draw boss before bullets for layering
+            drawBullets();
+            drawBird();
+            drawSpeechBubbles();
+            
+            // Draw minimap
+            drawMinimap();
+
+            update();
+            requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>
